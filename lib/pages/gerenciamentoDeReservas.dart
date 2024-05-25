@@ -9,6 +9,14 @@ class GerenciamentoDeReserva extends StatefulWidget {
 }
 
 class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
+  TextEditingController _textController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +51,77 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
             ),
             // Adicione mais widgets ListTile para botões adicionais, se necessário
           ],
+        ),
+      ),
+      body: Center(
+        child: Container(
+          width: 500,
+          height: 500,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Color(0xFF8DCBC8),
+              width: 2.0,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'Nome do estabelecimento',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 280,
+                    child: TextField(
+                      controller: _textController,
+                      decoration: InputDecoration(
+                        hintText: 'Informe o numero de andares...',
+                      ),
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                  SizedBox(width: 30), // Espaçamento entre a caixa de texto e o botão
+                  Container(
+                    width: 150,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Ação a ser executada quando o botão for pressionado
+                        print('Texto digitado: ${_textController.text}');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(
+                          color: Color(0xFF8DCBC8), // Cor da borda
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Text(
+                        'Confirmar',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
