@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: 200,
                     width: 400,
-                    child: Image.asset("assets/images/text.png"),
+                    child: Image.asset("Assets/Images/text.png"),
                   ),
                   const SizedBox(height: 20),
                   CaixaDeTextoPersonalizado(
