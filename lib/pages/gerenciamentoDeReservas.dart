@@ -1,7 +1,10 @@
-import 'package:ecoparkdesktop/widgets/BotaoCar.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoparkdesktop/widgets/BotaoCar.dart'; // Importe o BotaoCar aqui
 import '../widgets/AppBarPersonalizado.dart';
-import 'package:ecoparkdesktop/widgets/ButtonPersonalizadoEV.dart';
+
+// Comente a importação da API se não for utilizá-la agora
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
 
 class GerenciamentoDeReserva extends StatefulWidget {
   const GerenciamentoDeReserva({Key? key}) : super(key: key);
@@ -12,6 +15,11 @@ class GerenciamentoDeReserva extends StatefulWidget {
 
 class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   TextEditingController _textController = TextEditingController();
+  Map<Color, int> _carCounts = {
+    Colors.blue: 0,
+    Colors.green: 0,
+    Colors.yellow: 0,
+  };
 
   @override
   void dispose() {
@@ -19,10 +27,46 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
     super.dispose();
   }
 
+  void _updateCarCount(Color color) {
+    setState(() {
+      _carCounts[color] = (_carCounts[color] ?? 0) + 1;
+    });
+  }
+
+  // Comente a função de salvar alterações se não for utilizá-la agora
+  /*
+  void _saveChanges() async {
+    final data = {
+      'nome_estabelecimento': _textController.text,
+      'car_counts': {
+        'vaga_pdc': _carCounts[Colors.blue],
+        'vaga_combustao': _carCounts[Colors.green],
+        'vaga_eletrico': _carCounts[Colors.yellow],
+      },
+    };
+
+    final response = await http.post(
+      Uri.parse('http://suaapi.com/endpoint'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(data),
+    );
+
+    if (response.statusCode == 200) {
+      print('Dados salvos com sucesso!');
+    } else {
+      print('Erro ao salvar os dados: ${response.statusCode}');
+    }
+  }
+  */
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarPersonalizado(),
+      appBar: AppBar(
+        title: Text('Gerenciamento de Reserva'),
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -41,17 +85,12 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
             ),
             ListTile(
               title: Text('Gen. Reservas'),
-              onTap: () {
-                // Adicione funcionalidade para o Botão 1
-              },
+              onTap: () {},
             ),
             ListTile(
               title: Text('His. Reservas'),
-              onTap: () {
-                // Adicione funcionalidade para o Botão 2
-              },
+              onTap: () {},
             ),
-            // Adicione mais widgets ListTile para botões adicionais, se necessário
           ],
         ),
       ),
@@ -97,17 +136,16 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                       maxLines: 1,
                     ),
                   ),
-                  SizedBox(width: 30), // Espaçamento entre a caixa de texto e o botão
+                  SizedBox(width: 30),
                   Container(
                     width: 150,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Ação a ser executada quando o botão for pressionado
                         print('Texto digitado: ${_textController.text}');
                       },
                       style: ElevatedButton.styleFrom(
                         side: const BorderSide(
-                          color: const Color(0xFF8DCBC8), // Cor da borda
+                          color: const Color(0xFF8DCBC8),
                           width: 2.0,
                         ),
                       ),
@@ -122,10 +160,10 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                   ),
                 ],
               ),
-              SizedBox(height: 20), // Espaçamento entre os elementos
+              SizedBox(height: 20),
               Container(
                 width: 450,
-                height: 300,
+                height: 250,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF8DCBC8),
@@ -134,100 +172,150 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                 ),
                 child: Row(
                   children: [
-                    SizedBox(width: 60,),
+                    SizedBox(width: 60),
                     Column(
                       children: [
-                        SizedBox(height: 50,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
+                        SizedBox(height: 20),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
                       ],
                     ),
-                    SizedBox(width: 3,),
+                    SizedBox(width: 3),
                     Column(
                       children: [
-                        SizedBox(height: 50,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
+                        SizedBox(height: 20),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
                       ],
                     ),
-
-                    SizedBox(width: 70,),
+                    SizedBox(width: 70),
                     Column(
                       children: [
-                        SizedBox(height: 50,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
+                        SizedBox(height: 20),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
                       ],
                     ),
-                    SizedBox(width: 3,),
+                    SizedBox(width: 3),
                     Column(
                       children: [
-                        SizedBox(height: 50,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
-                        SizedBox(height: 3,),
-                        BotaoCar(),
+                        SizedBox(height: 20),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
+                        SizedBox(height: 3),
+                        BotaoCar(onColorChanged: _updateCarCount),
                       ],
                     ),
                   ],
-                ),    
+                ),
               ),
               SizedBox(height: 10),
+              SizedBox(
+                width: 350,
+                height: 30,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // _saveChanges();
+                    print('Salvar alterações');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF8DCBC8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  child: Text(
+                    'Salvar alterações',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
               Row(
                 children: [
-                  SizedBox(width: 23),
-                  BotaoPersonalizado(
-                    textController: _textController,
-                    buttonText: 'Vaga C.Ele.',
-                    buttonColor: Color(0xFFBFFF00), // Cor do botão
+                  SizedBox(width: 10),
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    'Carro a Combustao ',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(width: 10),
-                  BotaoPersonalizado(
-                    textController: _textController,
-                    buttonText: 'Vaga C. PDC',
-                    buttonColor: Colors.blue, // Cor do botão
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 10,),
+                  Text(
+                    'Carro eletrico!',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 10,),
               Row(
                 children: [
-                  SizedBox(width: 23),
-                  BotaoPersonalizado(
-                    textController: _textController,
-                    buttonText: 'Vaga C. Com.',
-                    buttonColor: Colors.green, // Cor do botão
-                  ),
                   SizedBox(width: 10),
-                  BotaoPersonalizado(
-                    textController: _textController,
-                    buttonText: 'Registrar Vagas',
-                    buttonColor: Color(0xFF8DCBC8), // Cor do botão
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 10,),
+                  Text(
+                    'Vaga para PDC ',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ],
-          ),
+          ),   
         ),
       ),
     );

@@ -1,28 +1,49 @@
 import 'package:flutter/material.dart';
 
+class BotaoCar extends StatefulWidget {
+  final Function(Color) onColorChanged;
 
-class BotaoCar extends StatelessWidget {
-  const BotaoCar({
-    super.key,
-  });
+  BotaoCar({Key? key, required this.onColorChanged}) : super(key: key);
+
+  @override
+  _BotaoCarState createState() => _BotaoCarState();
+}
+
+class _BotaoCarState extends State<BotaoCar> {
+  Color _currentColor = Colors.blue;
+  String _currentValue = 'vaga pdc';
+
+  void _toggleColor() {
+    setState(() {
+      if (_currentColor == Colors.blue) {
+        _currentColor = Colors.green;
+        _currentValue = 'vaga combustao';
+      } else if (_currentColor == Colors.green) {
+        _currentColor = Colors.yellow;
+        _currentValue = 'vaga eletrico';
+      } else {
+        _currentColor = Colors.blue;
+        _currentValue = 'vaga pdc';
+      }
+      widget.onColorChanged(_currentColor);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        // Adicione ação desejada aqui
-      },
+      onPressed: _toggleColor,
       style: ElevatedButton.styleFrom(
-        backgroundColor:Color(0xFF8DCBC8) ,
-        padding: const EdgeInsets.all(16), // Espaçamento interno do botão
+        backgroundColor: _currentColor,
+        padding: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10), // Borda arredondada
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
       child: Icon(
-        Icons.directions_car, // Ícone de carro
-        color: Colors.black, // Cor do ícone
-        size: 32, // Tamanho do ícone
+        Icons.directions_car,
+        color: Colors.black,
+        size: 32,
       ),
     );
   }
