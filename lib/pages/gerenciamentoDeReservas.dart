@@ -1,3 +1,5 @@
+import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
+import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoparkdesktop/widgets/BotaoCar.dart'; // Importe o BotaoCar aqui
 import '../widgets/AppBarPersonalizado.dart';
@@ -64,8 +66,8 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gerenciamento de Reserva'),
+      appBar: AppBarPersonalizado(
+        text: 'Gerenciamento de reservas', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(
@@ -73,7 +75,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: const Color(0xFF8DCBC8),
+                color: Color(0xFF8DCBC8),
               ),
               child: Text(
                 'Outras Páginas',
@@ -84,12 +86,20 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               ),
             ),
             ListTile(
-              title: Text('Gen. Reservas'),
-              onTap: () {},
+              title: Text('Gen. De premios'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
+                );
+              },
             ),
             ListTile(
               title: Text('His. Reservas'),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => HistoricoDeReservas()),
+                );
+              },
             ),
           ],
         ),
@@ -229,8 +239,8 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               ),
               SizedBox(height: 10),
               SizedBox(
-                width: 350,
-                height: 30,
+                width: 400,
+                height: 35,
                 child: ElevatedButton(
                   onPressed: () {
                     // _saveChanges();

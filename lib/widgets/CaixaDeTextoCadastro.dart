@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class CaixaDeTextoCadastro extends StatelessWidget {
   final String texto;
+  final TextEditingController controller;
 
   const CaixaDeTextoCadastro({
     Key? key,
     required this.texto,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -18,17 +20,16 @@ class CaixaDeTextoCadastro extends StatelessWidget {
           color: Colors.grey,
           width: 1.0,
         ),
-        borderRadius: BorderRadius.circular(15), // Adicionando borda de raio 15
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Center(
         child: TextField(
           decoration: InputDecoration(
-            hintText: 'Digite algo',
+            hintText: texto, // Usando o texto fornecido como dica para o campo de texto
             border: InputBorder.none,
             contentPadding: EdgeInsets.all(8.0),
           ),
-          controller: TextEditingController(text: texto), // Definindo o texto do TextField
-          onChanged: (value) {}, // Adicionando um onChanged vazio para evitar um erro
+          controller: controller,
         ),
       ),
     );

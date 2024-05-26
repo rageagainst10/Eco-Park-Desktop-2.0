@@ -1,6 +1,26 @@
-import 'package:flutter/material.dart';
+import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
+import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
-import '../widgets/AppBarPersonalizado.dart';
+import 'package:flutter/material.dart';
+
+// Classe modelo para representar os dados do formulário
+class FormularioData {
+  final String nome;
+  final String sobrenome;
+  final String idGestor;
+  final String email;
+  final String senha;
+  final String confirmarSenha;
+
+  FormularioData({
+    required this.nome,
+    required this.sobrenome,
+    required this.idGestor,
+    required this.email,
+    required this.senha,
+    required this.confirmarSenha,
+  });
+}
 
 class Cadastro extends StatefulWidget {
   const Cadastro({Key? key}) : super(key: key);
@@ -10,46 +30,46 @@ class Cadastro extends StatefulWidget {
 }
 
 class _CadastroState extends State<Cadastro> {
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _sobrenomeController = TextEditingController();
+  final TextEditingController _idGestorController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _confirmarSenhaController =
+      TextEditingController();
+
+  void _enviarDadosParaAPI() {
+    // Criar uma instância do modelo de dados com os valores dos campos de texto
+    FormularioData data = FormularioData(
+      nome: _nomeController.text,
+      sobrenome: _sobrenomeController.text,
+      idGestor: _idGestorController.text,
+      email: _emailController.text,
+      senha: _senhaController.text,
+      confirmarSenha: _confirmarSenhaController.text,
+    );
+    // Aqui você deve enviar os dados para a API
+    // Substitua este bloco com a lógica real para enviar os dados para a API
+    print('Enviando dados para a API: $data');
+
+    // Exemplo de como fazer uma solicitação POST para a API usando a biblioteca http
+    // http.post('sua_url_da_api', body: {
+    //   'nome': data.nome,
+    //   'sobrenome': data.sobrenome,
+    //   'idGestor': data.idGestor,
+    //   'email': data.email,
+    //   'senha': data.senha,
+    //   'confirmarSenha': data.confirmarSenha,
+    // }).then((response) {
+    //   // Lógica de manipulação da resposta da API
+    // }).catchError((error) {
+    //   // Lógica de tratamento de erro
+    // });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarPersonalizado(),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFF8DCBC8),
-              ),
-              child: Text(
-                'Outras Páginas',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text('Gen. Reservas'),
-              onTap: () {
-                // Adicione funcionalidade para o Botão 1
-                Navigator.pop(context); // Fecha o Drawer
-                Navigator.pushNamed(context, '/gen_reservas'); // Navega para a tela de reservas
-              },
-            ),
-            ListTile(
-              title: Text('His. Reservas'),
-              onTap: () {
-                // Adicione funcionalidade para o Botão 2
-                Navigator.pop(context); // Fecha o Drawer
-                Navigator.pushNamed(context, '/his_reservas'); // Navega para a tela de histórico de reservas
-              },
-            ),
-            // Adicione mais widgets ListTile para botões adicionais, se necessário
-          ],
-        ),
-      ),
       body: Center(
         child: Container(
           width: 350,
@@ -63,16 +83,16 @@ class _CadastroState extends State<Cadastro> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 10,),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "Criar acesso",
                 style: TextStyle(
-                  color: Color(0xFF8DCBC8), // Definindo a cor do texto
+                  color: Color(0xFF8DCBC8),
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -84,15 +104,16 @@ class _CadastroState extends State<Cadastro> {
                         color: Colors.grey,
                         width: 1.0,
                       ),
-                      borderRadius: BorderRadius.circular(15), // Adicionando borda de raio 15
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Center(
                       child: TextField(
                         decoration: InputDecoration(
-                          hintText: 'Digite algo',
+                          hintText: 'Nome',
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(8.0),
                         ),
+                        controller: _nomeController,
                       ),
                     ),
                   ),
@@ -104,34 +125,104 @@ class _CadastroState extends State<Cadastro> {
                         color: Colors.grey,
                         width: 1.0,
                       ),
-                      borderRadius: BorderRadius.circular(15), // Adicionando borda de raio 15
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Center(
                       child: TextField(
                         decoration: InputDecoration(
-                          hintText: 'Digite algo',
+                          hintText: 'Sobrenome',
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(8.0),
                         ),
+                        controller: _sobrenomeController,
                       ),
                     ),
                   ),
                 ],
               ),
-              Column(
-                children: [
-                  SizedBox(height: 15,),
-                  CaixaDeTextoCadastro(texto: 'E-mail'),
-                  SizedBox(height: 15,),
-                  CaixaDeTextoCadastro(texto: 'Senha'),
-                  SizedBox(height: 15,),
-                  CaixaDeTextoCadastro(texto: 'Confirmar Senha'),
-                  SizedBox(height: 15,),
-                  CaixaDeTextoCadastro(texto: 'ID/Gestor'),
-                  SizedBox(height: 15,)
-                ],
+              const SizedBox(height: 15),
+              CaixaDeTextoCadastro(
+                texto: 'ID/Gestor',
+                controller: _idGestorController,
               ),
-              // Adicione outros widgets aqui para o conteúdo da tela
+              const SizedBox(height: 15),
+              CaixaDeTextoCadastro(
+                texto: 'E-mail',
+                controller: _emailController,
+              ),
+              const SizedBox(height: 15),
+              CaixaDeTextoCadastro(
+                texto: 'Senha',
+                controller: _senhaController,
+              ),
+              const SizedBox(height: 15),
+              CaixaDeTextoCadastro(
+                texto: 'Confirmar Senha',
+                controller: _confirmarSenhaController,
+              ),
+              const SizedBox(height: 15),
+              Container(
+                height: 40,
+                width: 315,
+                child: TextButton(
+                  onPressed:(){
+                    //_enviarDadosParaAPI
+                    Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                    );
+                  }, // Corrigido o chamado do método
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(
+                        color: Color(0xFF8DCBC8),
+                        width: 2.0,
+                      ),
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Cadastrar',
+                    style: TextStyle(
+                      color: Color(0xFF8DCBC8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
+                },
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "Já Possui uma conta? ",
+                        style: TextStyle(
+                          color: Color(0xFF5C5C5C),
+                        ),
+                      ),
+                      TextSpan(
+                        text: "Entre",
+                        style: TextStyle(
+                          color: Color(0xFF8DCBC8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),

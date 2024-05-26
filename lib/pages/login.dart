@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+
+import 'package:ecoparkdesktop/pages/cadastro.dart';
+import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizado.dart';
+import 'package:flutter/material.dart';
+
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -100,7 +104,9 @@ class _LoginState extends State<Login> {
                     height: 45,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Ação do botão de login
+                        Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:  Color(0xFF8DCBC8), // Cor correta
@@ -116,6 +122,37 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Cadastro()),
+                );
+                },
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "Nao possui uma conta? ",
+                        style: TextStyle(
+                          color: Color(0xFF5C5C5C),
+                        ),
+                      ),
+                      TextSpan(
+                        text: "Cadastre-se",
+                        style: TextStyle(
+                          color: Color(0xFF8DCBC8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
                 ],
               ),
             ),

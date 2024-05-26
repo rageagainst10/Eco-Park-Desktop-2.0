@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AppBarPersonalizado extends StatelessWidget implements PreferredSizeWidget {
+  final String text; // Adicionando o parâmetro text
+
+  const AppBarPersonalizado({Key? key, required this.text}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -9,6 +13,7 @@ class AppBarPersonalizado extends StatelessWidget implements PreferredSizeWidget
         builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(Icons.menu),
+            color: Colors.white,
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -16,8 +21,15 @@ class AppBarPersonalizado extends StatelessWidget implements PreferredSizeWidget
         },
       ),
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os elementos no espaço disponível
         children: [
-          Spacer(), // Empurra o RichText para a direita
+          Text(
+            text, // Usando o texto fornecido
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
           RichText(
             text: TextSpan(
               children: [

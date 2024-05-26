@@ -1,3 +1,5 @@
+import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
+import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:flutter/material.dart';
 import '../widgets/AppBarPersonalizado.dart';
 
@@ -12,7 +14,9 @@ class _GerenciamentoDeReservaState extends State<HistoricoDeReservas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarPersonalizado(),
+      appBar: AppBarPersonalizado(
+        text: 'Histórico de Reservas', // Passando o texto desejado para o AppBarPersonalizado
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -32,19 +36,31 @@ class _GerenciamentoDeReservaState extends State<HistoricoDeReservas> {
             ListTile(
               title: Text('Gen. Reservas'),
               onTap: () {
-                // Adicione funcionalidade para o Botão 1
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                );
               },
             ),
             ListTile(
-              title: Text('His. Reservas'),
+              title: Text('Gen. Premios'),
               onTap: () {
-                // Adicione funcionalidade para o Botão 2
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
+                );
               },
             ),
-            // Adicione mais widgets ListTile para botões adicionais, se necessário
           ],
+        ),
+      ),
+      body: Center(
+        child: Text(
+          "PROBLEMAS TÉCNICOS",
+          style: TextStyle(
+            fontSize: 40,
+          ),
         ),
       ),
     );
   }
 }
+

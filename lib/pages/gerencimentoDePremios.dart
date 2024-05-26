@@ -1,3 +1,6 @@
+import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
+import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
+import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:flutter/material.dart';
 
 class GerenciamentoDePremios extends StatelessWidget {
@@ -96,9 +99,8 @@ class _HomeGerenciamentoDePremiosState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gerenciamento de Prêmios'),
-        backgroundColor: Color(0xFF8DCBC8),
+      appBar: AppBarPersonalizado(
+        text: 'Gerencimaneto de premios', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(
@@ -119,16 +121,19 @@ class _HomeGerenciamentoDePremiosState
             ListTile(
               title: Text('Gen. Reservas'),
               onTap: () {
-                // Adicione funcionalidade para o Botão 1
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                );
               },
             ),
             ListTile(
               title: Text('His. Reservas'),
               onTap: () {
-                // Adicione funcionalidade para o Botão 2
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => HistoricoDeReservas()),
+                );
               },
             ),
-            // Adicione mais widgets ListTile para botões adicionais, se necessário
           ],
         ),
       ),
