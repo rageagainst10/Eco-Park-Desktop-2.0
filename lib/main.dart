@@ -2,9 +2,22 @@ import 'package:ecoparkdesktop/pages/cadastro.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
+import 'package:ecoparkdesktop/repositories/auth_repository.dart';
+import 'package:ecoparkdesktop/sevices/auth_service.dart';
+import 'package:ecoparkdesktop/sevices/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+final getIt = GetIt.instance;
+
+void setupLocator() {
+  getIt.registerLazySingleton<StorageService>(() => StorageService());
+  getIt.registerLazySingleton<AuthRepository>(() => AuthRepository(getIt()));
+  getIt.registerLazySingleton<AuthService>(() => AuthService(getIt()));
+}
 
 void main() {
+  setupLocator();
   runApp(const MyApp());
 }
 

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class CaixaDeTextoPersonalizado extends StatelessWidget {
   final String hintText;
+  final TextEditingController? controller;
 
   const CaixaDeTextoPersonalizado({
     Key? key,
     required this.hintText,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -13,6 +15,7 @@ class CaixaDeTextoPersonalizado extends StatelessWidget {
     return SizedBox(
       width: 350,
       child: TextField(
+        controller: controller,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           border: const OutlineInputBorder(
@@ -25,7 +28,7 @@ class CaixaDeTextoPersonalizado extends StatelessWidget {
           hintText: hintText,
           hintStyle: const TextStyle(color: Colors.black),
         ),
-        obscureText: true,
+
       ),
     );
   }
