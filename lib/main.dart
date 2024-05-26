@@ -1,3 +1,4 @@
+import 'package:ecoparkdesktop/pages/cadastro.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
@@ -18,7 +19,7 @@ class _MyWidgetState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
   return const MaterialApp(
-    home: GerenciamentoDeReserva(),
+    home: Cadastro (),
   );
 }
 

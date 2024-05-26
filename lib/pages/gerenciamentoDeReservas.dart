@@ -282,7 +282,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                   ),
                   SizedBox(width: 10,),
                   Text(
-                    'Carro eletrico!',
+                    'Carro eletrico',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black,
