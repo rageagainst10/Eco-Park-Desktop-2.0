@@ -57,7 +57,7 @@ class _LocalizacaoCadastroState extends State<LocalizacaoCadastro> {
   Widget build(BuildContext context) {
     return Scaffold(
 appBar: AppBarPersonalizado(
-        text: 'Histórico de Reservas', // Passando o texto desejado para o AppBarPersonalizado
+        text: 'Cadastro de Localizaçâo', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(
