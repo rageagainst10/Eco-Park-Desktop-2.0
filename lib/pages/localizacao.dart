@@ -1,26 +1,31 @@
+import 'package:ecoparkdesktop/main.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+  import 'dart:convert';
+
+import '../services/storage_service.dart';
 
 // Classe modelo para representar os dados do formulário
 class FormularioData {
-  final String tempoLR;
-  final String taxaReserva;
-  final String nomeLocalizacao;
-  final String endereco;
-  final String taxaCancelamento;
-  final String taxaCustoPorHora;
+  final String reservationGraceInMinutes;
+  final String reservationFeeRate;
+  final String name;
+  final String address;
+  final String cancellationFeeRate;
+  final String hourlyParkingRate;
 
   FormularioData({
-    required this.tempoLR,
-    required this.taxaReserva,
-    required this.nomeLocalizacao,
-    required this.endereco,
-    required this.taxaCancelamento,
-    required this.taxaCustoPorHora,
+    required this.reservationGraceInMinutes,
+    required this.reservationFeeRate,
+    required this.name,
+    required this.address,
+    required this.cancellationFeeRate,
+    required this.hourlyParkingRate,
   });
 }
 
@@ -32,6 +37,12 @@ class LocalizacaoCadastro extends StatefulWidget {
 }
 
 class _LocalizacaoCadastroState extends State<LocalizacaoCadastro> {
+
+  Future<String?> _getToken() async {
+    return await _storageService.getToken();
+  }
+
+  final StorageService _storageService = getIt<StorageService>();
   final TextEditingController _tempoLRController = TextEditingController();
   final TextEditingController _taxaReservaController = TextEditingController();
   final TextEditingController _nomeLocalizacaoController = TextEditingController();
@@ -39,19 +50,44 @@ class _LocalizacaoCadastroState extends State<LocalizacaoCadastro> {
   final TextEditingController _taxaCancelamentoController = TextEditingController();
   final TextEditingController _taxaCustoPorHoraController = TextEditingController();
 
-  void _enviarDadosParaAPI() {
-    // Criar uma instância do modelo de dados com os valores dos campos de texto
-    FormularioData data = FormularioData(
-      tempoLR: _tempoLRController.text,
-      taxaReserva: _taxaReservaController.text,
-      nomeLocalizacao: _nomeLocalizacaoController.text,
-      endereco: _enderecoController.text,
-      taxaCancelamento: _taxaCancelamentoController.text,
-      taxaCustoPorHora: _taxaCustoPorHoraController.text,
-    );
+Future _enviarDadosParaAPI() async {
+  // Criar uma instância do modelo de dados com os valores dos campos de texto
+  FormularioData data = FormularioData(
+    reservationGraceInMinutes: _tempoLRController.text,
+    reservationFeeRate: _taxaReservaController.text,
+    name: _nomeLocalizacaoController.text,
+    address: _enderecoController.text,
+    cancellationFeeRate: _taxaCancelamentoController.text,
+    hourlyParkingRate: _taxaCustoPorHoraController.text,
+  );
 
-    // Lógica para enviar os dados para a API
+  final token = await _storageService.getToken();
+
+ final response = await http.post(
+    Uri.parse("https://wa-dev-ecopark-api.azurewebsites.net/Location"),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json', // Define o tipo de conteúdo como JSON
+    },
+    body: jsonEncode({
+      'name': data.name,
+      'address': data.address,
+      'reservationGraceInMinutes': int.parse(data.reservationGraceInMinutes),
+      'cancellationFeeRate': double.parse(data.cancellationFeeRate),
+      'reservationFeeRate': double.parse(data.reservationFeeRate),
+      'hourlyParkingRate': double.parse(data.hourlyParkingRate),
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    // Sucesso
+    print('Dados enviados com sucesso');
+  } else {
+    // Falha
+    print('Falha ao enviar dados: ${response.body}');
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +112,7 @@ appBar: AppBarPersonalizado(
               ),
             ),
             ListTile(
-              title: Text('Genrenciamento de Reservas'),
+              title: Text('Gerenciamento de Reservas'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
@@ -84,10 +120,18 @@ appBar: AppBarPersonalizado(
               },
             ),
             ListTile(
-              title: Text('Genreciamento de Premios'),
+              title: Text('Gerenciamento de Premios'),
               onTap: () {
                   Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Sair'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Login()),
                 );
               },
             ),

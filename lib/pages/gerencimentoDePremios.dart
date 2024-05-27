@@ -1,5 +1,6 @@
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/localizacao.dart';
+import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:flutter/material.dart';
 
@@ -119,7 +120,7 @@ class _HomeGerenciamentoDePremiosState
               ),
             ),
             ListTile(
-              title: Text('Genreciamento de reservas'),
+              title: Text('Gerenciamento de reservas'),
               onTap: () {
                   Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
@@ -127,10 +128,18 @@ class _HomeGerenciamentoDePremiosState
               },
             ),
             ListTile(
-              title: Text('Localizacao Cadastro'),
+              title: Text('Cadastro de Localização'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => LocalizacaoCadastro()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Sair'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Login()),
                 );
               },
             ),
