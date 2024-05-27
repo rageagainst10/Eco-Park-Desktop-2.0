@@ -5,7 +5,7 @@ import 'package:ecoparkdesktop/models/user_model.dart';
 import '../services/storage_service.dart'; // Importe seu UserModel
 
 class AuthRepository {
-  final String _baseUrl = 'https://apim-dev-ecopark-api.azure-api.net/'; // Substitua pela URL da sua API
+  final String _baseUrl = 'https://wa-dev-ecopark-api.azurewebsites.net/'; // Substitua pela URL da sua API
   final StorageService _storageService;
   AuthRepository(this._storageService);
 

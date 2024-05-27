@@ -7,7 +7,7 @@ import '../services/storage_service.dart';
 
 class ReservaRepository {
   final StorageService _storageService;
-  final String _baseUrl = 'https://apim-dev-ecopark-api.azure-api.net';
+  final String _baseUrl = 'https://wa-dev-ecopark-api.azurewebsites.net';
 
   ReservaRepository(this._storageService);
 
