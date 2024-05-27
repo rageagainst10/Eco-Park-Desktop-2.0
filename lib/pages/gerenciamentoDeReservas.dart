@@ -1,7 +1,6 @@
 import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:flutter/material.dart';
-import 'package:ecoparkdesktop/widgets/BotaoCar.dart'; // Importe o BotaoCar aqui
 import '../main.dart';
 import '../models/LocationModel.dart';
 import '../models/ParkingSpaceModel.dart';
@@ -28,7 +27,42 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   List<LocationModel> _estabelecimentos = [];
   LocationModel? _estabelecimentoSelecionado;
   List<ParkingSpaceModel> _vagas = [];
+  List<ParkingSpaceModel> _vagasEditadas = [];
   bool _isLoading = true;
+
+  void _onVagaEditada(ParkingSpaceModel vagaEditada) {
+    setState(() {
+      final index = _vagas.indexWhere((vaga) => vaga.id == vagaEditada.id);
+      if (index != -1) {
+        _vagas[index] = vagaEditada; // Substitui a vaga antiga pela editada
+      }
+      _vagasEditadas.add(vagaEditada); // Adiciona à lista de vagas editadas para salvar na API
+    });
+  }
+  void _saveChanges() async {
+    try {
+      for (var vaga in _vagasEditadas) {
+        await ReservaRepository(_storageService).salvarAlteracoes(vaga);
+      }
+
+      // Limpar a lista de vagas editadas após salvar
+      setState(() {
+        _vagasEditadas = [];
+      });
+
+      // Exibir mensagem de sucesso
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Alterações salvas com sucesso!')),
+      );
+    } catch (e) {
+      // Tratar erro ao salvar
+      print('Erro ao salvar alterações: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar alterações: $e')),
+      );
+    }
+  }
+
 
   Future<String?> _getToken() async {
     return await _storageService.getToken();
@@ -51,12 +85,34 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
     }
   }
 
+  int compareParkingSpaces(ParkingSpaceModel a, ParkingSpaceModel b) {
+    final RegExp regex = RegExp(r'(\d+)'); // Expressão regular para extrair números
+
+    final matchA = regex.firstMatch(a.name);
+    final matchB = regex.firstMatch(b.name);
+
+    if (matchA == null || matchB == null) {
+      return a.name.compareTo(b.name); // Se não houver números, compara as strings normalmente
+    }
+
+    final numA = int.parse(matchA.group(0)!); // Extrai e converte o número para inteiro
+    final numB = int.parse(matchB.group(0)!);
+
+    if (numA == numB) {
+      return a.name.compareTo(b.name); // Se os números forem iguais, compara as strings
+    } else {
+      return numA.compareTo(numB);    // Se os números forem diferentes, compara os números
+    }
+  }
   Future<void> _loadVagas(String estabelecimentoId) async {
     setState(() {
       _isLoading = true;
     });
     try {
       final locations = await ReservaRepository(_storageService).getLocations();
+      for (var location in locations) {
+        location.parkingSpaces.sort(compareParkingSpaces);
+      }
       setState(() {
         _vagas = locations.first.parkingSpaces; // Supondo que só há uma localização por estabelecimento
         _isLoading = false;
@@ -92,8 +148,8 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   @override
   Widget build(BuildContext context) {
     _isLoading
-        ? const CircularProgressIndicator()
-        : Expanded(child: ListaDeVagas(parkingSpaces: _vagas));
+        ? const Center(child: CircularProgressIndicator())
+        : Expanded(child: ListaDeVagas(parkingSpaces: _vagas, onVagaEditada: _onVagaEditada));
     return Scaffold(
       appBar: AppBarPersonalizado(
         text: 'Gerenciamento de reservas', // Passando o texto desejado para o AppBarPersonalizado
@@ -148,6 +204,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
             children: [
           DropdownButton<LocationModel>(
           value: _estabelecimentoSelecionado,
+            hint: const Text("Selecionar localização"),
             items: _estabelecimentos.map((location) {
               return DropdownMenuItem<LocationModel>(
                 value: location,
@@ -163,13 +220,54 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               });
             },
           ),
-          _isLoading
-              ? const CircularProgressIndicator()
-              : Expanded(child: ListaDeVagas(parkingSpaces: _vagas)), // Exibir a lista de vagas
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : Expanded(
+                child: Column(
+                  children: [
+                    Expanded(child: ListaDeVagas(parkingSpaces: _vagas, onVagaEditada: _onVagaEditada,)), // Grade de vagas
+                    _buildLegenda(), // Legenda de cores
+                    ElevatedButton(
+                      onPressed: _saveChanges, // Chama o método para salvar as alterações
+                      child: const Text('Salvar Alterações'),
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
     ),
+    );
+  }
+  Widget _buildLegenda() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildLegendaItem(Colors.blue, 'Elétrico'),
+          _buildLegendaItem(Colors.green, 'Combustão'),
+          _buildLegendaItem(Colors.yellow, 'Outros'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendaItem(Color color, String label) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(label),
+      ],
     );
   }
 }

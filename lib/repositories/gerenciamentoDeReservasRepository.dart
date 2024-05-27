@@ -7,13 +7,13 @@ import '../services/storage_service.dart';
 
 class ReservaRepository {
   final StorageService _storageService;
-  final String _baseUrl = 'https://apim-dev-ecopark-api.azure-api.net/Location/';
+  final String _baseUrl = 'https://apim-dev-ecopark-api.azure-api.net';
 
   ReservaRepository(this._storageService);
 
   Future<List<LocationModel>> getLocations() async {
     final StorageService _storageService = GetIt.I<StorageService>();
-    final url = Uri.parse(_baseUrl + 'list');
+    final url = Uri.parse(_baseUrl + '/Location/list');
     final token = await _storageService.getToken(); // Obter o token do StorageService
 
     if (token == null) {
@@ -43,8 +43,8 @@ class ReservaRepository {
     }
   }
 
-  Future<void> salvarAlteracoes(Map<String, dynamic> data) async {
-    final url = Uri.parse(_baseUrl + 'updateParkingSpaces');
+  Future<void> salvarAlteracoes(ParkingSpaceModel vaga) async {
+    final url = Uri.parse('$_baseUrl/ParkingSpace?id=${vaga.id}');
     final token = await _storageService.getToken();
 
     if (token == null) {
@@ -52,23 +52,34 @@ class ReservaRepository {
     }
 
     try {
-      final response = await http.post(
+      final response = await http.patch(
         url,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode(data),
+        body: jsonEncode({
+          'floor': vaga.floor,
+          'parkingSpaceName': vaga.name,
+          'parkingSpaceType': _getParkingSpaceType(vaga.type),
+          'isOccupied': vaga.isOccupied,
+        }),
       );
 
-      if (response.statusCode == 200) {
-        print('Dados salvos com sucesso!');
-      } else {
+      if (response.statusCode != 201) {
         final errorData = jsonDecode(response.body);
         throw Exception('Erro ao salvar alterações: ${errorData['error'] ?? 'Erro desconhecido'}');
       }
     } catch (e) {
       throw Exception('Erro na comunicação com a API: $e');
+    }
+  }
+
+  int _getParkingSpaceType(String tipo) {
+    switch (tipo) {
+      case 'Electric': return 0;
+      case 'Combustion': return 1;
+      default: return 2; // Other
     }
   }
 }

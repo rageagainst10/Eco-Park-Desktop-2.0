@@ -22,6 +22,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _senhaController = TextEditingController();
   final AuthService _authService = getIt<AuthService>();// Obter instância do AuthService
   bool _isLoading = false;
+  bool _obscureText = true;
 
   void _login() async {
     String email = _emailController.text;
@@ -58,7 +59,7 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 20),
                   RichText(
                     textAlign: TextAlign.center,
-                    text: TextSpan(
+                    text: const TextSpan(
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -116,14 +117,41 @@ class _LoginState extends State<Login> {
                     child: Image.asset("Assets/Images/text.png"),
                   ),
                   const SizedBox(height: 20),
-                  CaixaDeTextoPersonalizado(
-                    hintText: 'E-mail',
-                    controller: _emailController,
+                  SizedBox( // Adiciona um SizedBox para definir a largura da caixa de texto de e-mail
+                    width: 350, // Define a largura desejada (ajuste conforme necessário)
+                    child: CaixaDeTextoPersonalizado(
+                      hintText: 'E-mail',
+                      controller: _emailController,
+                    ),
                   ),
                   const SizedBox(height: 20),
-                  CaixaDeTextoPersonalizado(
-                    hintText: 'Senha',
-                    controller: _senhaController,
+                  SizedBox( // Adiciona um SizedBox para definir a largura da caixa de texto de senha
+                    width: 350, // Define a mesma largura da caixa de texto de e-mail
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: CaixaDeTextoPersonalizado(
+                              hintText: 'Senha',
+                              controller: _senhaController,
+                              obscureText: _obscureText,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: IconButton(
+                              icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 30),
                   SizedBox(

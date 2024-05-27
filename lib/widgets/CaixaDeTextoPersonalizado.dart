@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 class CaixaDeTextoPersonalizado extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
+  final bool obscureText;
+
 
   const CaixaDeTextoPersonalizado({
     Key? key,
     required this.hintText,
     this.controller,
+    this.obscureText = false,
   }) : super(key: key);
 
   @override
@@ -28,7 +31,7 @@ class CaixaDeTextoPersonalizado extends StatelessWidget {
           hintText: hintText,
           hintStyle: const TextStyle(color: Colors.black),
         ),
-
+        obscureText: obscureText,
       ),
     );
   }
