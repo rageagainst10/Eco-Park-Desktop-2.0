@@ -10,9 +10,6 @@ import '../services/storage_service.dart';
 import '../widgets/AppBarPersonalizado.dart';
 import '../widgets/ListaDeVagas.dart';
 
-// Comente a importação da API se não for utilizá-la agora
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
 
 class GerenciamentoDeReserva extends StatefulWidget {
   const GerenciamentoDeReserva({Key? key}) : super(key: key);

@@ -156,13 +156,13 @@ class _CadastroState extends State<Cadastro> {
                     );
                   }, 
                   style: ButtonStyle(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(
                         color: Color(0xFF8DCBC8),
                         width: 2.0,
                       ),
                     ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
