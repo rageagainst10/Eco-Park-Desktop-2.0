@@ -1,4 +1,6 @@
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
+import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
+import 'package:ecoparkdesktop/pages/localizacao.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
@@ -169,7 +171,7 @@ class _CadastroState extends State<Cadastro> {
                   onPressed:(){
                     //_enviarDadosParaAPI
                     Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                    MaterialPageRoute(builder: (context) => LocalizacaoCadastro()),
                     );
                   }, // Corrigido o chamado do método
                   style: ButtonStyle(

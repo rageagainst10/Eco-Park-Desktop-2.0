@@ -1,5 +1,5 @@
 import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
-import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
+import 'package:ecoparkdesktop/pages/localizacao.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/LocationModel.dart';
@@ -168,18 +168,18 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               ),
             ),
             ListTile(
-              title: Text('Gen. De premios'),
+              title: Text('Localizacao Cadastro'),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
+                  MaterialPageRoute(builder: (context) => LocalizacaoCadastro()),
                 );
               },
             ),
             ListTile(
-              title: Text('His. Reservas'),
+              title: Text('Gen. Premios '),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => HistoricoDeReservas()),
+                  MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
                 );
               },
             ),

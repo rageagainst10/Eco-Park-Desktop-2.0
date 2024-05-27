@@ -1,5 +1,7 @@
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
+import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
+import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
 
@@ -22,14 +24,14 @@ class FormularioData {
   });
 }
 
-class Cadastro extends StatefulWidget {
-  const Cadastro({Key? key}) : super(key: key);
+class LocalizacaoCadastro extends StatefulWidget {
+  const LocalizacaoCadastro({Key? key}) : super(key: key);
 
   @override
-  State<Cadastro> createState() => _CadastroState();
+  State<LocalizacaoCadastro> createState() => _LocalizacaoCadastroState();
 }
 
-class _CadastroState extends State<Cadastro> {
+class _LocalizacaoCadastroState extends State<LocalizacaoCadastro> {
   final TextEditingController _tempoLRController = TextEditingController();
   final TextEditingController _taxaReservaController = TextEditingController();
   final TextEditingController _nomeLocalizacaoController = TextEditingController();
@@ -54,6 +56,44 @@ class _CadastroState extends State<Cadastro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+appBar: AppBarPersonalizado(
+        text: 'Histórico de Reservas', // Passando o texto desejado para o AppBarPersonalizado
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF8DCBC8),
+              ),
+              child: Text(
+                'Outras Páginas',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Gen. Reservas'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Gen. Premios'),
+              onTap: () {
+                  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
         child: Container(
           width: 350,
@@ -154,15 +194,15 @@ class _CadastroState extends State<Cadastro> {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
                     );
-                  }, 
+                  },
                   style: ButtonStyle(
-                    side: WidgetStateProperty.all<BorderSide>(
+                    side: MaterialStateProperty.all<BorderSide>(
                       const BorderSide(
                         color: Color(0xFF8DCBC8),
                         width: 2.0,
                       ),
                     ),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -176,7 +216,6 @@ class _CadastroState extends State<Cadastro> {
                   ),
                 ),
               ),
-              
             ],
           ),
         ),
@@ -185,8 +224,4 @@ class _CadastroState extends State<Cadastro> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: Cadastro(),
-  ));
-}
+

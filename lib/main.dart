@@ -1,6 +1,5 @@
 import 'package:ecoparkdesktop/pages/cadastro.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
-import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/repositories/auth_repository.dart';
 import 'package:ecoparkdesktop/services/auth_service.dart';
