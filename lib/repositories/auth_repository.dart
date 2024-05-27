@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ecoparkdesktop/models/user_model.dart';
 
-import '../sevices/storage_service.dart'; // Importe seu UserModel
+import '../services/storage_service.dart'; // Importe seu UserModel
 
 class AuthRepository {
   final String _baseUrl = 'https://apim-dev-ecopark-api.azure-api.net/'; // Substitua pela URL da sua API

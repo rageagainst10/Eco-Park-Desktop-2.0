@@ -3,8 +3,8 @@ import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/repositories/auth_repository.dart';
-import 'package:ecoparkdesktop/sevices/auth_service.dart';
-import 'package:ecoparkdesktop/sevices/storage_service.dart';
+import 'package:ecoparkdesktop/services/auth_service.dart';
+import 'package:ecoparkdesktop/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 

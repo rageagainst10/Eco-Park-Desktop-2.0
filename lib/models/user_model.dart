@@ -10,8 +10,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       email: json['email'],
-      token: json['token'],
-      // ... outras propriedades
+      token: json['token']
     );
   }
 }

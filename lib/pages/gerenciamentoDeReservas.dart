@@ -2,7 +2,14 @@ import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/historicoDeReserva.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoparkdesktop/widgets/BotaoCar.dart'; // Importe o BotaoCar aqui
+import '../main.dart';
+import '../models/LocationModel.dart';
+import '../models/ParkingSpaceModel.dart';
+import '../repositories/gerenciamentoDeReservasRepository.dart';
+import '../services/auth_service.dart';
+import '../services/storage_service.dart';
 import '../widgets/AppBarPersonalizado.dart';
+import '../widgets/ListaDeVagas.dart';
 
 // Comente a importação da API se não for utilizá-la agora
 // import 'package:http/http.dart' as http;
@@ -10,12 +17,55 @@ import '../widgets/AppBarPersonalizado.dart';
 
 class GerenciamentoDeReserva extends StatefulWidget {
   const GerenciamentoDeReserva({Key? key}) : super(key: key);
-
   @override
   State<GerenciamentoDeReserva> createState() => _GerenciamentoDeReservaState();
 }
 
 class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
+  final AuthService _authService = getIt<AuthService>();
+  final StorageService _storageService = getIt<StorageService>();
+
+  List<LocationModel> _estabelecimentos = [];
+  LocationModel? _estabelecimentoSelecionado;
+  List<ParkingSpaceModel> _vagas = [];
+  bool _isLoading = true;
+
+  Future<String?> _getToken() async {
+    return await _storageService.getToken();
+  }
+  @override
+  void initState() {
+    super.initState();
+    _loadEstabelecimentos();
+  }
+
+  Future<void> _loadEstabelecimentos() async {
+    try {
+      final estabelecimentos = await ReservaRepository(_storageService).getLocations();
+      setState(() {
+        _estabelecimentos = estabelecimentos;
+        _isLoading = false;
+      });
+    } catch (e) {
+      // Tratar erro
+    }
+  }
+
+  Future<void> _loadVagas(String estabelecimentoId) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final locations = await ReservaRepository(_storageService).getLocations();
+      setState(() {
+        _vagas = locations.first.parkingSpaces; // Supondo que só há uma localização por estabelecimento
+        _isLoading = false;
+      });
+    } catch (e) {
+      // Tratar erro
+    }
+  }
+
   TextEditingController _textController = TextEditingController();
   Map<Color, int> _carCounts = {
     Colors.blue: 0,
@@ -35,36 +85,15 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
     });
   }
 
-  // Comente a função de salvar alterações se não for utilizá-la agora
-  /*
-  void _saveChanges() async {
-    final data = {
-      'nome_estabelecimento': _textController.text,
-      'car_counts': {
-        'vaga_pdc': _carCounts[Colors.blue],
-        'vaga_combustao': _carCounts[Colors.green],
-        'vaga_eletrico': _carCounts[Colors.yellow],
-      },
-    };
 
-    final response = await http.post(
-      Uri.parse('http://suaapi.com/endpoint'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode(data),
-    );
 
-    if (response.statusCode == 200) {
-      print('Dados salvos com sucesso!');
-    } else {
-      print('Erro ao salvar os dados: ${response.statusCode}');
-    }
-  }
-  */
+
 
   @override
   Widget build(BuildContext context) {
+    _isLoading
+        ? const CircularProgressIndicator()
+        : Expanded(child: ListaDeVagas(parkingSpaces: _vagas));
     return Scaffold(
       appBar: AppBarPersonalizado(
         text: 'Gerenciamento de reservas', // Passando o texto desejado para o AppBarPersonalizado
@@ -117,217 +146,30 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Nome do estabelecimento',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    width: 280,
-                    child: TextField(
-                      controller: _textController,
-                      decoration: InputDecoration(
-                        hintText: 'Informe o número de andares...',
-                      ),
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                      maxLines: 1,
-                    ),
-                  ),
-                  SizedBox(width: 30),
-                  Container(
-                    width: 150,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        print('Texto digitado: ${_textController.text}');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(
-                          color: const Color(0xFF8DCBC8),
-                          width: 2.0,
-                        ),
-                      ),
-                      child: Text(
-                        'Confirmar',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Container(
-                width: 450,
-                height: 250,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color(0xFF8DCBC8),
-                    width: 2.0,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(width: 60),
-                    Column(
-                      children: [
-                        SizedBox(height: 20),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                      ],
-                    ),
-                    SizedBox(width: 3),
-                    Column(
-                      children: [
-                        SizedBox(height: 20),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                      ],
-                    ),
-                    SizedBox(width: 70),
-                    Column(
-                      children: [
-                        SizedBox(height: 20),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                      ],
-                    ),
-                    SizedBox(width: 3),
-                    Column(
-                      children: [
-                        SizedBox(height: 20),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                        SizedBox(height: 3),
-                        BotaoCar(onColorChanged: _updateCarCount),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                width: 400,
-                height: 35,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // _saveChanges();
-                    print('Salvar alterações');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8DCBC8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: Text(
-                    'Salvar alterações',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  SizedBox(width: 10,),
-                  Text(
-                    'Carro a Combustao ',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  SizedBox(width: 10,),
-                  Text(
-                    'Carro eletrico',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10,),
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  SizedBox(width: 10,),
-                  Text(
-                    'Vaga para PDC ',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),   
+          DropdownButton<LocationModel>(
+          value: _estabelecimentoSelecionado,
+            items: _estabelecimentos.map((location) {
+              return DropdownMenuItem<LocationModel>(
+                value: location,
+                child: Text(location.name),
+              );
+            }).toList(),
+            onChanged: (LocationModel? newValue) {
+              setState(() {
+                _estabelecimentoSelecionado = newValue;
+                if (newValue != null) {
+                  _loadVagas(newValue.id);
+                }
+              });
+            },
+          ),
+          _isLoading
+              ? const CircularProgressIndicator()
+              : Expanded(child: ListaDeVagas(parkingSpaces: _vagas)), // Exibir a lista de vagas
+          ],
         ),
       ),
+    ),
     );
   }
 }
