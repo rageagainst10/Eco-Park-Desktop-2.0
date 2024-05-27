@@ -176,7 +176,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               },
             ),
             ListTile(
-              title: Text('Gen. Premios '),
+              title: Text('Genreciamento de Premios'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),

@@ -76,7 +76,7 @@ appBar: AppBarPersonalizado(
               ),
             ),
             ListTile(
-              title: Text('Gen. Reservas'),
+              title: Text('Genrenciamento de Reservas'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
@@ -84,7 +84,7 @@ appBar: AppBarPersonalizado(
               },
             ),
             ListTile(
-              title: Text('Gen. Premios'),
+              title: Text('Genreciamento de Premios'),
               onTap: () {
                   Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),

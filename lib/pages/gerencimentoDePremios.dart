@@ -119,7 +119,7 @@ class _HomeGerenciamentoDePremiosState
               ),
             ),
             ListTile(
-              title: Text('Gen. Reservas'),
+              title: Text('Genreciamento de reservas'),
               onTap: () {
                   Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
