@@ -18,4 +18,10 @@ class AuthService {
   void logout() {
     _currentUser = null;
   }
+
+  static bool validarEmail(String email) {
+    // Expressão regular para validar o formato do e-mail
+    final RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    return emailRegex.hasMatch(email);
+  }
 }

@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
 
-import '../services/auth_service.dart';
-
-class CaixaDeTextoPersonalizado extends StatefulWidget {
+class CaixaDeTextoPersonalizadoSenha extends StatefulWidget {
   final String hintText;
   final TextEditingController? controller;
-
   final Function(String)? onSubmitted;
 
-  const CaixaDeTextoPersonalizado({
+  const CaixaDeTextoPersonalizadoSenha({
     Key? key,
     required this.hintText,
     this.controller,
     this.onSubmitted,
   }) : super(key: key);
+
   @override
-  _CaixaDeTextoPersonalizadoState createState() => _CaixaDeTextoPersonalizadoState();
+  _CaixaDeTextoPersonalizadoSenhaState createState() => _CaixaDeTextoPersonalizadoSenhaState();
 }
 
-class _CaixaDeTextoPersonalizadoState extends State<CaixaDeTextoPersonalizado> {
-  String? _errorMessage;
+class _CaixaDeTextoPersonalizadoSenhaState extends State<CaixaDeTextoPersonalizadoSenha> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
-    return
-      SizedBox(
+    return SizedBox(
       width: 350,
       child: TextField(
         controller: widget.controller,
@@ -38,20 +35,20 @@ class _CaixaDeTextoPersonalizadoState extends State<CaixaDeTextoPersonalizado> {
             ),
           ),
           hintText: widget.hintText,
-          errorText: _errorMessage,
+          suffixIcon: IconButton(
+            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
           hintStyle: const TextStyle(color: Colors.black),
         ),
+        obscureText: _obscureText,
         onSubmitted: widget.onSubmitted,
-        onChanged: (value) {
-          setState(() {
-            _errorMessage = AuthService.validarEmail(value) ? null : 'Formato de e-mail inválido';
-          });
-        },
       ),
-
     );
   }
-
-
 }
 

@@ -111,9 +111,9 @@ class _ListaDeVagasState extends State<ListaDeVagas> {
 
   Color _getColor(String tipo) {
     switch (tipo) {
-      case 'Electric':
+      case 'Elétrico':
         return Colors.blue; // Azul para elétrico
-      case 'Combustion':
+      case 'Combustão':
         return Colors.green; // Verde para combustão
       case 'Pcd':
         return Colors.yellow; // Amarelo para pcd

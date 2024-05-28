@@ -3,6 +3,7 @@ import 'package:ecoparkdesktop/pages/cadastro.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/localizacao.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizado.dart';
+import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizadoSenha.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoparkdesktop/repositories/auth_repository.dart';
 import 'package:ecoparkdesktop/services/auth_service.dart';
@@ -23,11 +24,18 @@ class _LoginState extends State<Login> {
   final TextEditingController _senhaController = TextEditingController();
   final AuthService _authService = getIt<AuthService>();// Obter instância do AuthService
   bool _isLoading = false;
-  bool _obscureText = true;
 
   void _login() async {
     String email = _emailController.text;
     String senha = _senhaController.text;
+
+    if(!AuthService.validarEmail(email)){
+      return;
+    }
+
+    setState(() {
+      _isLoading = true; // Mostrar indicador de carregamento
+    });
 
     try {
       await _authService.login(email, senha);
@@ -37,6 +45,10 @@ class _LoginState extends State<Login> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Erro no login: $error'),
       ));
+    } finally {
+      setState(() {
+        _isLoading = false; // Esconder indicador de carregamento
+      });
     }
   }
 
@@ -123,6 +135,7 @@ class _LoginState extends State<Login> {
                     child: CaixaDeTextoPersonalizado(
                       hintText: 'E-mail',
                       controller: _emailController,
+                      onSubmitted: (_) => _login(), // Chama a função _login ao pressionar Enter
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -133,21 +146,10 @@ class _LoginState extends State<Login> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Expanded(
-                            child: CaixaDeTextoPersonalizado(
+                            child: CaixaDeTextoPersonalizadoSenha(
                               hintText: 'Senha',
                               controller: _senhaController,
-                              obscureText: _obscureText,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: IconButton(
-                              icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
+                              onSubmitted: (_) => _login(), // Chama a função _login ao pressionar Enter
                             ),
                           ),
                         ],
@@ -159,30 +161,7 @@ class _LoginState extends State<Login> {
                     width: 350,
                     height: 45,
                     child: ElevatedButton(
-                      onPressed: () async { // Tornar o método assíncrono
-                        String email = _emailController.text;
-                        String senha = _senhaController.text;
-
-                        // Adicione validação de email e senha aqui (opcional)
-
-                        setState(() {
-                          _isLoading = true; // Mostrar indicador de carregamento
-                        });
-
-                        try {
-                          await _authService.login(email, senha);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()));
-                        } catch (e) {
-                          // Tratar o erro de login (exibir mensagem, etc.)
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Erro no login: $e'),
-                          ));
-                        } finally {
-                          setState(() {
-                            _isLoading = false; // Esconder indicador de carregamento
-                          });
-                        }
-                      },
+                      onPressed: () => _login(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF8DCBC8),
                         shape: RoundedRectangleBorder(

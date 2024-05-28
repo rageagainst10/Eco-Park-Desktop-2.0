@@ -54,20 +54,6 @@ class _CadastroState extends State<Cadastro> {
     // Aqui você deve enviar os dados para a API
     // Substitua este bloco com a lógica real para enviar os dados para a API
     print('Enviando dados para a API: $data');
-
-    // Exemplo de como fazer uma solicitação POST para a API usando a biblioteca http
-    //http.post('sua_url_da_api', body: {
-    //   'nome': data.nome,
-    //   'sobrenome': data.sobrenome,
-    //   'idGestor': data.idGestor,
-    //   'email': data.email,
-    //   'senha': data.senha,
-    //   'confirmarSenha': data.confirmarSenha,
-    // }).then((response) {
-    //   // Lógica de manipulação da resposta da API
-    // }).catchError((error) {
-       // Lógica de tratamento de erro
-    // });
   }
 
   @override

@@ -257,7 +257,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
         children: [
           _buildLegendaItem(Colors.blue, 'Elétrico'),
           _buildLegendaItem(Colors.green, 'Combustão'),
-          _buildLegendaItem(Colors.yellow, 'Outros'),
+          _buildLegendaItem(Colors.yellow, 'Pcd'),
         ],
       ),
     );
