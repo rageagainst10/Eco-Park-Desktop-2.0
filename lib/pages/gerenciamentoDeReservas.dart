@@ -108,11 +108,14 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
     });
     try {
       final locations = await ReservaRepository(_storageService).getLocations();
-      for (var location in locations) {
-        location.parkingSpaces.sort(compareParkingSpaces);
-      }
+
+      // Encontra a localização com o ID especificado
+      final location = locations.firstWhere((loc) => loc.id == estabelecimentoId);
+
+      // Ordena as vagas da localização encontrada
+      location.parkingSpaces.sort(compareParkingSpaces);
       setState(() {
-        _vagas = locations.first.parkingSpaces; // Supondo que só há uma localização por estabelecimento
+        _vagas = location.parkingSpaces; // Supondo que só há uma localização por estabelecimento
         _isLoading = false;
       });
     } catch (e) {
