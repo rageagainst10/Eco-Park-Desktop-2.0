@@ -9,6 +9,7 @@ import '../repositories/gerenciamentoDeReservasRepository.dart';
 import '../services/storage_service.dart';
 import '../widgets/AppBarPersonalizado.dart';
 import '../widgets/ListaDeVagas.dart';
+import 'cadastro.dart';
 
 
 class GerenciamentoDeReserva extends StatefulWidget {
@@ -167,6 +168,14 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                   fontSize: 24,
                 ),
               ),
+            ),
+            ListTile(
+              title: Text('Cadastro de Funcionários'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Cadastro()),
+                );
+              },
             ),
             ListTile(
               title: Text('Cadastro de Localizacao'),
