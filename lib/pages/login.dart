@@ -1,13 +1,10 @@
 
-import 'package:ecoparkdesktop/pages/cadastro.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/localizacao.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizadoSenha.dart';
 import 'package:flutter/material.dart';
-import 'package:ecoparkdesktop/repositories/auth_repository.dart';
 import 'package:ecoparkdesktop/services/auth_service.dart';
-import 'package:http/http.dart' as http;
 
 import '../main.dart';
 import '../repositories/gerenciamentoDeReservasRepository.dart';

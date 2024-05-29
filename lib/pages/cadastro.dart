@@ -1,10 +1,7 @@
-import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
-import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/localizacao.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 // Classe modelo para representar os dados do formulário
 class FormularioData {

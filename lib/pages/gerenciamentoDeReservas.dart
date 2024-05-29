@@ -6,7 +6,6 @@ import '../main.dart';
 import '../models/LocationModel.dart';
 import '../models/ParkingSpaceModel.dart';
 import '../repositories/gerenciamentoDeReservasRepository.dart';
-import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/AppBarPersonalizado.dart';
 import '../widgets/ListaDeVagas.dart';
@@ -19,7 +18,6 @@ class GerenciamentoDeReserva extends StatefulWidget {
 }
 
 class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
-  final AuthService _authService = getIt<AuthService>();
   final StorageService _storageService = getIt<StorageService>();
 
   List<LocationModel> _estabelecimentos = [];

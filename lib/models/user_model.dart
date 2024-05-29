@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class UserModel {
   final String email;
   final String token; // Exemplo de outras propriedades que a API pode retornar
