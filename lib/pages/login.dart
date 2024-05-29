@@ -10,6 +10,8 @@ import 'package:ecoparkdesktop/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
+import '../repositories/gerenciamentoDeReservasRepository.dart';
+import '../services/storage_service.dart';
 
 
 class Login extends StatefulWidget {
@@ -23,6 +25,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final AuthService _authService = getIt<AuthService>();// Obter instância do AuthService
+  final StorageService _storageService = getIt<StorageService>();
   bool _isLoading = false;
 
   void _login() async {
@@ -38,8 +41,16 @@ class _LoginState extends State<Login> {
     });
 
     try {
-      await _authService.login(email, senha);
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LocalizacaoCadastro()));
+      await _authService.login(email, senha);//Faz o login
+
+      final locations = await ReservaRepository(_storageService).getLocations();
+
+      if (locations.isEmpty){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LocalizacaoCadastro()));
+      }
+      else{
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()));
+      }
     } catch (error) {
       // Exibir mensagem de erro (snackbar, diálogo, etc.)
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

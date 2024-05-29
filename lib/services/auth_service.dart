@@ -9,6 +9,9 @@ class AuthService {
 
   Future<void> login(String email, String senha) async {
     _currentUser = await _authRepository.login(email, senha);
+
+
+
   }
 
   bool get isLoggedIn => _currentUser != null;
