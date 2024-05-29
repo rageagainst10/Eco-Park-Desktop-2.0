@@ -8,26 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
   import 'dart:convert';
 
+import '../models/LocationCadastroModel.dart';
 import '../services/storage_service.dart';
 
 // Classe modelo para representar os dados do formulário
-class FormularioData {
-  final String reservationGraceInMinutes;
-  final String reservationFeeRate;
-  final String name;
-  final String address;
-  final String cancellationFeeRate;
-  final String hourlyParkingRate;
 
-  FormularioData({
-    required this.reservationGraceInMinutes,
-    required this.reservationFeeRate,
-    required this.name,
-    required this.address,
-    required this.cancellationFeeRate,
-    required this.hourlyParkingRate,
-  });
-}
 
 class LocalizacaoCadastro extends StatefulWidget {
   const LocalizacaoCadastro({Key? key}) : super(key: key);
