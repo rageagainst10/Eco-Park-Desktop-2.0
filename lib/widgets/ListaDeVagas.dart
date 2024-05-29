@@ -70,7 +70,10 @@ class _ListaDeVagasState extends State<ListaDeVagas> {
                 hint: Text('Andar'),
                 value: novoTipo,
                 onChanged: (value) => setState(() => novoTipo = value),
-                items: ['Electric', 'Combustion', 'Pcd'].map((tipo) => DropdownMenuItem(value: tipo, child: Text(tipo))).toList(),
+                items: [_buildDropdownMenuItem('Elétrico', 'Electric'),
+                  _buildDropdownMenuItem('Combustão', 'Combustion'),
+                  _buildDropdownMenuItem('PCD', 'Pcd'),
+                ],
               ),
               TextFormField(
                 initialValue: novoAndar.toString(),
@@ -111,14 +114,21 @@ class _ListaDeVagasState extends State<ListaDeVagas> {
 
   Color _getColor(String tipo) {
     switch (tipo) {
-      case 'Elétrico':
+      case 'Electric':
         return Colors.blue; // Azul para elétrico
-      case 'Combustão':
+      case 'Combustion':
         return Colors.green; // Verde para combustão
       case 'Pcd':
         return Colors.yellow; // Amarelo para pcd
       default:
         return Colors.grey; //cinza para outros
     }
+  }
+
+  DropdownMenuItem<String> _buildDropdownMenuItem(String label, String value) {
+    return DropdownMenuItem<String>(
+      value: value, // Valor em inglês
+      child: Text(label), // Texto em português
+    );
   }
 }

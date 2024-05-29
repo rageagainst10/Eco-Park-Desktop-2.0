@@ -54,7 +54,6 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
       );
     } catch (e) {
       // Tratar erro ao salvar
-      print('Erro ao salvar alterações: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao salvar alterações: $e')),
       );

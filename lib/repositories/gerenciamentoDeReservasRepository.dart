@@ -67,9 +67,16 @@ class ReservaRepository {
       );
 
       if (response.statusCode != 201) {
-        final errorData = jsonDecode(response.body);
-        throw Exception('Erro ao salvar alterações: ${errorData['error'] ?? 'Erro desconhecido'}');
+        if (response.statusCode == 403) {
+          final  errorData = response.reasonPhrase;
+          throw Exception(errorData ?? 'Erro desconhecido');
+        }
+        else{
+          final  errorData = jsonDecode(response.body);
+          throw Exception('Erro ao salvar alterações: ${errorData['message'] ?? 'Erro desconhecido'}');
+        }
       }
+
     } catch (e) {
       throw Exception('Erro na comunicação com a API: $e');
     }

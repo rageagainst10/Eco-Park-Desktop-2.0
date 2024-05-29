@@ -177,36 +177,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => Cadastro()),
-                );
-                },
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Nao possui uma conta? ",
-                        style: TextStyle(
-                          color: Color(0xFF5C5C5C),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "Cadastre-se",
-                        style: TextStyle(
-                          color: Color(0xFF8DCBC8),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+
                 ],
               ),
             ),

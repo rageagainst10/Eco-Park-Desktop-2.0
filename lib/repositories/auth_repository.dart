@@ -37,7 +37,7 @@ class AuthRepository {
       } else {
         // Lide com erros de autenticação (401, etc.)
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['error'] ?? 'Erro desconhecido no login');
+        throw Exception(errorData['message'] ?? 'Erro desconhecido no login');
       }
     } catch (e) {
       // Lide com erros de rede ou outros erros
