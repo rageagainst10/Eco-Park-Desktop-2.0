@@ -1,26 +1,13 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:ecoparkdesktop/pages/localizacao.dart';
-import 'package:ecoparkdesktop/pages/login.dart';
+import 'package:ecoparkdesktop/repositories/FuncionarioRepository.dart'; // Importe o repositório
+import 'package:ecoparkdesktop/services/storage_service.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'dart:io';
 
-// Classe modelo para representar os dados do formulário
-class FormularioData {
-  final String nome;
-  final String sobrenome;
-  final String idGestor;
-  final String email;
-  final String senha;
-  final String confirmarSenha;
-
-  FormularioData({
-    required this.nome,
-    required this.sobrenome,
-    required this.idGestor,
-    required this.email,
-    required this.senha,
-    required this.confirmarSenha,
-  });
-}
+import '../models/FormularioModel.dart'; // Para File
 
 class Cadastro extends StatefulWidget {
   const Cadastro({Key? key}) : super(key: key);
@@ -38,7 +25,22 @@ class _CadastroState extends State<Cadastro> {
   final TextEditingController _confirmarSenhaController =
       TextEditingController();
 
-  void _enviarDadosParaAPI() {
+  final StorageService _storageService = GetIt.I<StorageService>();
+
+  File? _imagem;
+
+  Future<void> _getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Ou ImageSource.camera
+
+    if (pickedFile != null) {
+      setState(() {
+        _imagem = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _cadastrarFuncionario() async {
     // Criar uma instância do modelo de dados com os valores dos campos de texto
     FormularioData data = FormularioData(
       nome: _nomeController.text,
@@ -46,10 +48,28 @@ class _CadastroState extends State<Cadastro> {
       idGestor: _idGestorController.text,
       email: _emailController.text,
       senha: _senhaController.text,
-      confirmarSenha: _confirmarSenhaController.text,
     );
-    // Aqui você deve enviar os dados para a API
-    // Substitua este bloco com a lógica real para enviar os dados para a API
+
+    try {
+      final token =
+          await _storageService.getToken(); // Obter o token do StorageService
+
+      if (token == null) {
+        throw Exception('Usuário não autenticado');
+      }
+
+      await FuncionarioRepository(_storageService).cadastrarFuncionario(
+        data.nome,
+        data.sobrenome,
+        data.idGestor,
+        data.email,
+        data.senha,
+        _imagem,
+      );
+    } catch (e) {
+      // Tratar erro
+      print('Erro ao cadastrar funcionário: $e');
+    }
     print('Enviando dados para a API: $data');
   }
 
@@ -71,7 +91,7 @@ class _CadastroState extends State<Cadastro> {
             children: [
               const SizedBox(height: 10),
               const Text(
-                "Criar acesso",
+                "Cadastrar Funcionário",
                 style: TextStyle(
                   color: Color(0xFF8DCBC8),
                   fontSize: 30,
@@ -147,14 +167,20 @@ class _CadastroState extends State<Cadastro> {
                 controller: _confirmarSenhaController,
               ),
               const SizedBox(height: 15),
+              ElevatedButton(
+                onPressed: _getImage,
+                child: const Text('Escolher Imagem'),
+              ),
+              const SizedBox(height: 15),
               Container(
                 height: 40,
                 width: 315,
                 child: TextButton(
-                  onPressed:(){
-                    //_enviarDadosParaAPI
+                  onPressed: () {
+                    _cadastrarFuncionario();
                     Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => LocalizacaoCadastro()),
+                      MaterialPageRoute(
+                          builder: (context) => LocalizacaoCadastro()),
                     );
                   }, // Corrigido o chamado do método
                   style: ButtonStyle(
@@ -175,37 +201,6 @@ class _CadastroState extends State<Cadastro> {
                     style: TextStyle(
                       color: Color(0xFF8DCBC8),
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                },
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Já Possui uma conta? ",
-                        style: TextStyle(
-                          color: Color(0xFF5C5C5C),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "Entre",
-                        style: TextStyle(
-                          color: Color(0xFF8DCBC8),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),

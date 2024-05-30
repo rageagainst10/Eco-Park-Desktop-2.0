@@ -46,7 +46,7 @@ Future _enviarDadosParaAPI() async {
     hourlyParkingRate: _taxaCustoPorHoraController.text,
   );
 
-  final token = await _storageService.getToken();
+  final token = await _getToken();
 
  final response = await http.post(
     Uri.parse("https://wa-dev-ecopark-api.azurewebsites.net/Location"),
