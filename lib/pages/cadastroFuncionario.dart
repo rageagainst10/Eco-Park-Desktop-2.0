@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:ecoparkdesktop/pages/localizacao.dart';
 import 'package:ecoparkdesktop/repositories/FuncionarioRepository.dart'; // Importe o repositório
@@ -5,9 +7,10 @@ import 'package:ecoparkdesktop/services/storage_service.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'dart:io';
-
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 import '../models/FormularioModel.dart'; // Para File
+import 'package:mime/mime.dart';
 
 class Cadastro extends StatefulWidget {
   const Cadastro({Key? key}) : super(key: key);
@@ -27,16 +30,22 @@ class _CadastroState extends State<Cadastro> {
 
   final StorageService _storageService = GetIt.I<StorageService>();
 
+  Uint8List? _imageData;
+  String? _mimeType;
+  String? _imageName;
   File? _imagem;
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Ou ImageSource.camera
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    _imageName = pickedFile?.name;
+    _mimeType = lookupMimeType(pickedFile!.path.split('/').last);
 
     if (pickedFile != null) {
+      _imageData = await pickedFile.readAsBytes(); // Lê os bytes da imagem
       setState(() {
         _imagem = File(pickedFile.path);
-      });
+      }); // Atualiza o estado para exibir a imagem selecionada (opcional)
     }
   }
 
@@ -64,7 +73,9 @@ class _CadastroState extends State<Cadastro> {
         data.idGestor,
         data.email,
         data.senha,
-        _imagem,
+        _imageData,
+        _mimeType,
+        _imageName,
       );
     } catch (e) {
       // Tratar erro
@@ -79,7 +90,7 @@ class _CadastroState extends State<Cadastro> {
       body: Center(
         child: Container(
           width: 350,
-          height: 500,
+          height: 600,
           decoration: BoxDecoration(
             border: Border.all(
               color: const Color(0xFF8DCBC8),
@@ -204,6 +215,13 @@ class _CadastroState extends State<Cadastro> {
                   ),
                 ),
               ),
+              _imagem != null // Exibe a imagem se ela foi selecionada
+                  ? Image.memory(
+                _imageData!,
+                width: 100, // Ajuste a largura conforme necessário
+                height: 100, // Ajuste a altura conforme necessário
+              )
+                  : const SizedBox.shrink(), // Não exibe nada se não houver imagem
             ],
           ),
         ),
