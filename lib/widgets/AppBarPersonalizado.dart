@@ -1,6 +1,8 @@
+import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:flutter/material.dart';
 
-class AppBarPersonalizado extends StatelessWidget implements PreferredSizeWidget {
+class AppBarPersonalizado extends StatelessWidget
+    implements PreferredSizeWidget {
   final String text; // Adicionando o parâmetro text
 
   const AppBarPersonalizado({Key? key, required this.text}) : super(key: key);
@@ -8,7 +10,8 @@ class AppBarPersonalizado extends StatelessWidget implements PreferredSizeWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(0xFF8DCBC8), // Defina a cor de fundo da barra de aplicativos
+      backgroundColor:
+          Color(0xFF8DCBC8), // Defina a cor de fundo da barra de aplicativos
       leading: Builder(
         builder: (BuildContext context) {
           return IconButton(
@@ -21,7 +24,8 @@ class AppBarPersonalizado extends StatelessWidget implements PreferredSizeWidget
         },
       ),
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os elementos no espaço disponível
+        mainAxisAlignment: MainAxisAlignment
+            .spaceBetween, // Alinha os elementos no espaço disponível
         children: [
           Text(
             text, // Usando o texto fornecido
