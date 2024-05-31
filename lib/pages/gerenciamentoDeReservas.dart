@@ -1,5 +1,7 @@
+import 'package:ecoparkdesktop/pages/AtribuirPermissao.dart';
+import 'package:ecoparkdesktop/pages/atualizarDados.dart';
 import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
-import 'package:ecoparkdesktop/pages/localizacao.dart';
+import 'package:ecoparkdesktop/pages/cadastroLocalizacao.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
@@ -164,10 +166,11 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               ),
             ),
             ListTile(
-              title: Text('Cadastro de Funcionários'),
+              title: Text('Gerenciamento de Premios'),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => Cadastro()),
+                  MaterialPageRoute(
+                      builder: (context) => GerenciamentoDePremios()),
                 );
               },
             ),
@@ -176,16 +179,32 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => LocalizacaoCadastro()),
+                      builder: (context) => CadastroDeLocalizacao()),
                 );
               },
             ),
             ListTile(
-              title: Text('Gerenciamento de Premios'),
+              title: Text('Cadastro de Funcionario'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => GerenciamentoDePremios()),
+                      builder: (context) => CadastroDeFuncionario()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atribuir Permissão'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtribuirPermissao()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atualizar Dados'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtualizarDados()),
                 );
               },
             ),

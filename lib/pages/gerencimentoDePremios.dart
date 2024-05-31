@@ -1,5 +1,8 @@
+import 'package:ecoparkdesktop/pages/AtribuirPermissao.dart';
+import 'package:ecoparkdesktop/pages/atualizarDados.dart';
+import 'package:ecoparkdesktop/pages/cadastroFuncionario.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
-import 'package:ecoparkdesktop/pages/localizacao.dart';
+import 'package:ecoparkdesktop/pages/cadastroLocalizacao.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +104,8 @@ class _HomeGerenciamentoDePremiosState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarPersonalizado(
-        text: 'Gerencimaneto de premios', // Passando o texto desejado para o AppBarPersonalizado
+        text:
+            'Gerencimaneto de premios', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(
@@ -122,8 +126,9 @@ class _HomeGerenciamentoDePremiosState
             ListTile(
               title: Text('Gerenciamento de reservas'),
               onTap: () {
-                  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GerenciamentoDeReserva()),
                 );
               },
             ),
@@ -131,7 +136,33 @@ class _HomeGerenciamentoDePremiosState
               title: Text('Cadastro de Localização'),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => LocalizacaoCadastro()),
+                  MaterialPageRoute(
+                      builder: (context) => CadastroDeLocalizacao()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Cadastro de Funcionario'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => CadastroDeFuncionario()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atribuir Permissão'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtribuirPermissao()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atualizar Dados'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtualizarDados()),
                 );
               },
             ),

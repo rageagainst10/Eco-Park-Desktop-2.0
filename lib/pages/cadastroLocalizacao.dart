@@ -1,4 +1,7 @@
 import 'package:ecoparkdesktop/main.dart';
+import 'package:ecoparkdesktop/pages/AtribuirPermissao.dart';
+import 'package:ecoparkdesktop/pages/atualizarDados.dart';
+import 'package:ecoparkdesktop/pages/cadastroFuncionario.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
@@ -6,23 +9,21 @@ import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-  import 'dart:convert';
+import 'dart:convert';
 
 import '../models/LocationCadastroModel.dart';
 import '../services/storage_service.dart';
 
 // Classe modelo para representar os dados do formulário
 
-
-class LocalizacaoCadastro extends StatefulWidget {
-  const LocalizacaoCadastro({Key? key}) : super(key: key);
+class CadastroDeLocalizacao extends StatefulWidget {
+  const CadastroDeLocalizacao({Key? key}) : super(key: key);
 
   @override
-  State<LocalizacaoCadastro> createState() => _LocalizacaoCadastroState();
+  State<CadastroDeLocalizacao> createState() => _CadastroDeLocalizacaoState();
 }
 
-class _LocalizacaoCadastroState extends State<LocalizacaoCadastro> {
-
+class _CadastroDeLocalizacaoState extends State<CadastroDeLocalizacao> {
   Future<String?> _getToken() async {
     return await _storageService.getToken();
   }
@@ -30,55 +31,59 @@ class _LocalizacaoCadastroState extends State<LocalizacaoCadastro> {
   final StorageService _storageService = getIt<StorageService>();
   final TextEditingController _tempoLRController = TextEditingController();
   final TextEditingController _taxaReservaController = TextEditingController();
-  final TextEditingController _nomeLocalizacaoController = TextEditingController();
+  final TextEditingController _nomeLocalizacaoController =
+      TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
-  final TextEditingController _taxaCancelamentoController = TextEditingController();
-  final TextEditingController _taxaCustoPorHoraController = TextEditingController();
+  final TextEditingController _taxaCancelamentoController =
+      TextEditingController();
+  final TextEditingController _taxaCustoPorHoraController =
+      TextEditingController();
 
-Future _enviarDadosParaAPI() async {
-  // Criar uma instância do modelo de dados com os valores dos campos de texto
-  FormularioData data = FormularioData(
-    reservationGraceInMinutes: _tempoLRController.text,
-    reservationFeeRate: _taxaReservaController.text,
-    name: _nomeLocalizacaoController.text,
-    address: _enderecoController.text,
-    cancellationFeeRate: _taxaCancelamentoController.text,
-    hourlyParkingRate: _taxaCustoPorHoraController.text,
-  );
+  Future _enviarDadosParaAPI() async {
+    // Criar uma instância do modelo de dados com os valores dos campos de texto
+    FormularioData data = FormularioData(
+      reservationGraceInMinutes: _tempoLRController.text,
+      reservationFeeRate: _taxaReservaController.text,
+      name: _nomeLocalizacaoController.text,
+      address: _enderecoController.text,
+      cancellationFeeRate: _taxaCancelamentoController.text,
+      hourlyParkingRate: _taxaCustoPorHoraController.text,
+    );
 
-  final token = await _getToken();
+    final token = await _getToken();
 
- final response = await http.post(
-    Uri.parse("https://wa-dev-ecopark-api.azurewebsites.net/Location"),
-    headers: {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json', // Define o tipo de conteúdo como JSON
-    },
-    body: jsonEncode({
-      'name': data.name,
-      'address': data.address,
-      'reservationGraceInMinutes': int.parse(data.reservationGraceInMinutes),
-      'cancellationFeeRate': double.parse(data.cancellationFeeRate),
-      'reservationFeeRate': double.parse(data.reservationFeeRate),
-      'hourlyParkingRate': double.parse(data.hourlyParkingRate),
-    }),
-  );
+    final response = await http.post(
+      Uri.parse("https://wa-dev-ecopark-api.azurewebsites.net/Location"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type':
+            'application/json', // Define o tipo de conteúdo como JSON
+      },
+      body: jsonEncode({
+        'name': data.name,
+        'address': data.address,
+        'reservationGraceInMinutes': int.parse(data.reservationGraceInMinutes),
+        'cancellationFeeRate': double.parse(data.cancellationFeeRate),
+        'reservationFeeRate': double.parse(data.reservationFeeRate),
+        'hourlyParkingRate': double.parse(data.hourlyParkingRate),
+      }),
+    );
 
-  if (response.statusCode == 200) {
-    // Sucesso
-    print('Dados enviados com sucesso');
-  } else {
-    // Falha
-    print('Falha ao enviar dados: ${response.body}');
+    if (response.statusCode == 200) {
+      // Sucesso
+      print('Dados enviados com sucesso');
+    } else {
+      // Falha
+      print('Falha ao enviar dados: ${response.body}');
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBarPersonalizado(
-        text: 'Cadastro de Localizaçâo', // Passando o texto desejado para o AppBarPersonalizado
+      appBar: AppBarPersonalizado(
+        text:
+            'Cadastro de Localizaçâo', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(
@@ -100,15 +105,42 @@ appBar: AppBarPersonalizado(
               title: Text('Gerenciamento de Reservas'),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                  MaterialPageRoute(
+                      builder: (context) => GerenciamentoDeReserva()),
                 );
               },
             ),
             ListTile(
               title: Text('Gerenciamento de Premios'),
               onTap: () {
-                  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GerenciamentoDePremios()),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GerenciamentoDePremios()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Cadastro de Funcionario'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => CadastroDeFuncionario()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atribuir Permissão'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtribuirPermissao()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atualizar Dados'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtualizarDados()),
                 );
               },
             ),
@@ -221,7 +253,8 @@ appBar: AppBarPersonalizado(
                   onPressed: () {
                     _enviarDadosParaAPI();
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()),
+                      MaterialPageRoute(
+                          builder: (context) => GerenciamentoDeReserva()),
                     );
                   },
                   style: ButtonStyle(
@@ -252,5 +285,3 @@ appBar: AppBarPersonalizado(
     );
   }
 }
-
-

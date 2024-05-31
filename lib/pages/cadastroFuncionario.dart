@@ -1,7 +1,13 @@
 import 'dart:io';
 
+import 'package:ecoparkdesktop/pages/AtribuirPermissao.dart';
+import 'package:ecoparkdesktop/pages/atualizarDados.dart';
+import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
+import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
+import 'package:ecoparkdesktop/pages/login.dart';
+import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ecoparkdesktop/pages/localizacao.dart';
+import 'package:ecoparkdesktop/pages/cadastroLocalizacao.dart';
 import 'package:ecoparkdesktop/repositories/FuncionarioRepository.dart'; // Importe o repositório
 import 'package:ecoparkdesktop/services/storage_service.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
@@ -12,14 +18,14 @@ import 'package:image_picker/image_picker.dart';
 import '../models/FormularioModel.dart'; // Para File
 import 'package:mime/mime.dart';
 
-class Cadastro extends StatefulWidget {
-  const Cadastro({Key? key}) : super(key: key);
+class CadastroDeFuncionario extends StatefulWidget {
+  const CadastroDeFuncionario({Key? key}) : super(key: key);
 
   @override
-  State<Cadastro> createState() => _CadastroState();
+  State<CadastroDeFuncionario> createState() => _CadastroDeFuncionarioState();
 }
 
-class _CadastroState extends State<Cadastro> {
+class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _sobrenomeController = TextEditingController();
   final TextEditingController _idGestorController = TextEditingController();
@@ -37,7 +43,8 @@ class _CadastroState extends State<Cadastro> {
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
     _imageName = pickedFile?.name;
     _mimeType = lookupMimeType(pickedFile!.path.split('/').last);
 
@@ -87,10 +94,84 @@ class _CadastroState extends State<Cadastro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarPersonalizado(
+        text:
+            'Gerencimaneto de premios', // Passando o texto desejado para o AppBarPersonalizado
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF8DCBC8),
+              ),
+              child: Text(
+                'Outras Páginas',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Gerenciamento de Reservas'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GerenciamentoDeReserva()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Gerenciamento de Premios'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => GerenciamentoDePremios()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Cadastro de Localização'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => CadastroDeLocalizacao()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atribuir Permissão'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtribuirPermissao()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Atualizar Dados'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AtualizarDados()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Sair'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => Login()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
         child: Container(
           width: 350,
-          height: 600,
+          height: 500,
           decoration: BoxDecoration(
             border: Border.all(
               color: const Color(0xFF8DCBC8),
@@ -159,11 +240,6 @@ class _CadastroState extends State<Cadastro> {
               ),
               const SizedBox(height: 15),
               CaixaDeTextoCadastro(
-                texto: 'ID/Gestor',
-                controller: _idGestorController,
-              ),
-              const SizedBox(height: 15),
-              CaixaDeTextoCadastro(
                 texto: 'E-mail',
                 controller: _emailController,
               ),
@@ -178,9 +254,31 @@ class _CadastroState extends State<Cadastro> {
                 controller: _confirmarSenhaController,
               ),
               const SizedBox(height: 15),
-              ElevatedButton(
-                onPressed: _getImage,
-                child: const Text('Escolher Imagem'),
+              Container(
+                height: 40,
+                width: 315,
+                child: TextButton(
+                  onPressed: _getImage,
+                  child: const Text(
+                    'Escolher Imagem',
+                    style: TextStyle(
+                      color: Color(0xFF8DCBC8),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(
+                        color: Color(0xFF8DCBC8),
+                        width: 2.0,
+                      ),
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 15),
               Container(
@@ -191,7 +289,7 @@ class _CadastroState extends State<Cadastro> {
                     _cadastrarFuncionario();
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) => LocalizacaoCadastro()),
+                          builder: (context) => CadastroDeLocalizacao()),
                     );
                   }, // Corrigido o chamado do método
                   style: ButtonStyle(
@@ -217,11 +315,12 @@ class _CadastroState extends State<Cadastro> {
               ),
               _imagem != null // Exibe a imagem se ela foi selecionada
                   ? Image.memory(
-                _imageData!,
-                width: 100, // Ajuste a largura conforme necessário
-                height: 100, // Ajuste a altura conforme necessário
-              )
-                  : const SizedBox.shrink(), // Não exibe nada se não houver imagem
+                      _imageData!,
+                      width: 100, // Ajuste a largura conforme necessário
+                      height: 100, // Ajuste a altura conforme necessário
+                    )
+                  : const SizedBox
+                      .shrink(), // Não exibe nada se não houver imagem
             ],
           ),
         ),

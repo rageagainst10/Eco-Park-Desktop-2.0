@@ -1,6 +1,5 @@
-
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
-import 'package:ecoparkdesktop/pages/localizacao.dart';
+import 'package:ecoparkdesktop/pages/cadastroLocalizacao.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizadoSenha.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:ecoparkdesktop/services/auth_service.dart';
 import '../main.dart';
 import '../repositories/gerenciamentoDeReservasRepository.dart';
 import '../services/storage_service.dart';
-
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -21,7 +19,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  final AuthService _authService = getIt<AuthService>();// Obter instância do AuthService
+  final AuthService _authService =
+      getIt<AuthService>(); // Obter instância do AuthService
   final StorageService _storageService = getIt<StorageService>();
   bool _isLoading = false;
 
@@ -29,7 +28,7 @@ class _LoginState extends State<Login> {
     String email = _emailController.text;
     String senha = _senhaController.text;
 
-    if(!AuthService.validarEmail(email)){
+    if (!AuthService.validarEmail(email)) {
       return;
     }
 
@@ -38,15 +37,16 @@ class _LoginState extends State<Login> {
     });
 
     try {
-      await _authService.login(email, senha);//Faz o login
+      await _authService.login(email, senha); //Faz o login
 
       final locations = await ReservaRepository(_storageService).getLocations();
 
-      if (locations.isEmpty){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LocalizacaoCadastro()));
-      }
-      else{
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()));
+      if (locations.isEmpty) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => CadastroDeLocalizacao()));
+      } else {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => GerenciamentoDeReserva()));
       }
     } catch (error) {
       // Exibir mensagem de erro (snackbar, diálogo, etc.)
@@ -138,17 +138,22 @@ class _LoginState extends State<Login> {
                     child: Image.asset("Assets/Images/text.png"),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox( // Adiciona um SizedBox para definir a largura da caixa de texto de e-mail
-                    width: 350, // Define a largura desejada (ajuste conforme necessário)
+                  SizedBox(
+                    // Adiciona um SizedBox para definir a largura da caixa de texto de e-mail
+                    width:
+                        350, // Define a largura desejada (ajuste conforme necessário)
                     child: CaixaDeTextoPersonalizado(
                       hintText: 'E-mail',
                       controller: _emailController,
-                      onSubmitted: (_) => _login(), // Chama a função _login ao pressionar Enter
+                      onSubmitted: (_) =>
+                          _login(), // Chama a função _login ao pressionar Enter
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox( // Adiciona um SizedBox para definir a largura da caixa de texto de senha
-                    width: 350, // Define a mesma largura da caixa de texto de e-mail
+                  SizedBox(
+                    // Adiciona um SizedBox para definir a largura da caixa de texto de senha
+                    width:
+                        350, // Define a mesma largura da caixa de texto de e-mail
                     child: IntrinsicHeight(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -157,7 +162,8 @@ class _LoginState extends State<Login> {
                             child: CaixaDeTextoPersonalizadoSenha(
                               hintText: 'Senha',
                               controller: _senhaController,
-                              onSubmitted: (_) => _login(), // Chama a função _login ao pressionar Enter
+                              onSubmitted: (_) =>
+                                  _login(), // Chama a função _login ao pressionar Enter
                             ),
                           ),
                         ],
@@ -176,16 +182,17 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: _isLoading // Mostrar indicador de carregamento se estiver carregando
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child:
+                          _isLoading // Mostrar indicador de carregamento se estiver carregando
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                              : const Text(
+                                  'Login',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                     ),
                   ),
                   const SizedBox(height: 10),
-
                 ],
               ),
             ),
@@ -195,4 +202,3 @@ class _LoginState extends State<Login> {
     );
   }
 }
-
