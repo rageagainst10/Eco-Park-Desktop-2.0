@@ -14,4 +14,14 @@ class StorageService {
   Future<void> deleteToken() async {
     await _storage.delete(key: 'authToken');
   }
+
+  Future<void> saveUserRole(String userRole) async {
+    await _storage.write(key: 'userRole', value: userRole);
+  }
+  Future<String?> getUserRole() async {
+    return await _storage.read(key: 'userRole');
+  }
+  Future<void> deleteUserRole() async {
+    await _storage.delete(key: 'userRole');
+  }
 }

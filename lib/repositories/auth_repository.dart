@@ -1,6 +1,8 @@
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ecoparkdesktop/models/user_model.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../services/storage_service.dart'; // Importe seu UserModel
 
@@ -32,6 +34,10 @@ class AuthRepository {
         final String token = data['token'];
 
         await _storageService.saveToken(token);
+
+        final jwt = JWT.decode(token);//Decodifica o Token
+        // Salvar o UserRole no StorageService
+        await _storageService.saveUserRole(jwt.payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
 
         return UserModel.fromJson(data); // Crie um método fromJson no UserModel
       } else {
