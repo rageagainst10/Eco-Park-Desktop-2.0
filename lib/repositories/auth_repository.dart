@@ -39,6 +39,8 @@ class AuthRepository {
         // Salvar o UserRole no StorageService
         await _storageService.saveUserRole(jwt.payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
 
+        //tratamento de erro para caso o usuário autenticado seja do tipo Client ou System
+
         return UserModel.fromJson(data); // Crie um método fromJson no UserModel
       } else {
         // Lide com erros de autenticação (401, etc.)

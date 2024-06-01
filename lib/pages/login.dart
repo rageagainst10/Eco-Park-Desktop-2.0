@@ -4,6 +4,7 @@ import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizadoSenha.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoparkdesktop/services/auth_service.dart';
+import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../repositories/gerenciamentoDeReservasRepository.dart';
@@ -38,6 +39,30 @@ class _LoginState extends State<Login> {
 
     try {
       await _authService.login(email, senha); //Faz o login
+      final role = await _storageService.getUserRole();
+
+      if (role == 'Client'){
+        await _authService.logout();
+        // Exibe o AlertDialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Acesso Negado'),
+              content: const Text('Clientes não podem acessar a plataforma administrativa.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Fecha o AlertDialog
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
 
       final locations = await ReservaRepository(_storageService).getLocations();
 
