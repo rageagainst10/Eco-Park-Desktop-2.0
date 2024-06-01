@@ -117,7 +117,7 @@ class _AtualizarDadosState extends State<AtualizarDados> {
           height: 350,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.grey,
+              color: Color(0xFF8DCBC8),
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(15),
