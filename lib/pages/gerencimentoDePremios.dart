@@ -105,7 +105,7 @@ class _HomeGerenciamentoDePremiosState
     return Scaffold(
       appBar: AppBarPersonalizado(
         text:
-            'Gerencimaneto de premios', // Passando o texto desejado para o AppBarPersonalizado
+            'Gerenciamento de premios', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(

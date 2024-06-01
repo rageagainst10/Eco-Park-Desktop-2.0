@@ -96,7 +96,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     return Scaffold(
       appBar: AppBarPersonalizado(
         text:
-            'Gerencimaneto de premios', // Passando o texto desejado para o AppBarPersonalizado
+            'Cadastro de Funcionários', // Passando o texto desejado para o AppBarPersonalizado
       ),
       drawer: Drawer(
         child: ListView(
