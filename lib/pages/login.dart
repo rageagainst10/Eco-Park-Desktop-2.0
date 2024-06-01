@@ -49,7 +49,7 @@ class _LoginState extends State<Login> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Acesso Negado'),
-              content: const Text('Clientes não podem acessar a plataforma administrativa.'),
+              content: const Text('Clientes não podem acessar a plataforma administrativa. Baixe nosso aplicativo para utilizar a plataforma como motorista ou entre e contato com a nossa equipe para se registrar como administrador.'),
               actions: <Widget>[
                 TextButton(
                   child: const Text('OK'),
@@ -62,6 +62,26 @@ class _LoginState extends State<Login> {
           },
         );
         return;
+      }
+      else if (role == 'System'){
+        // Exibe o AlertDialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Cuidado'),
+              content: const Text('É recomendado que o User do tipo System faça o gerenciamento via código.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Fecha o AlertDialog
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
 
       final locations = await ReservaRepository(_storageService).getLocations();

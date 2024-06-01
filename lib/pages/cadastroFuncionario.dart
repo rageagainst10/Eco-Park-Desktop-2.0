@@ -15,8 +15,11 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
+import '../main.dart';
 import '../models/FormularioModel.dart'; // Para File
 import 'package:mime/mime.dart';
+
+import '../services/auth_service.dart';
 
 class CadastroDeFuncionario extends StatefulWidget {
   const CadastroDeFuncionario({Key? key}) : super(key: key);
@@ -35,6 +38,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
       TextEditingController();
 
   final StorageService _storageService = GetIt.I<StorageService>();
+  final AuthService _authService = getIt<AuthService>(); // Obter instância do AuthService
 
   Uint8List? _imageData;
   String? _mimeType;
@@ -65,6 +69,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
       email: _emailController.text,
       senha: _senhaController.text,
     );
+
 
     try {
       final token =
@@ -159,7 +164,8 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
             ),
             ListTile(
               title: Text('Sair'),
-              onTap: () {
+              onTap: () async {
+                await _authService.logout();
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => Login()),
                 );
