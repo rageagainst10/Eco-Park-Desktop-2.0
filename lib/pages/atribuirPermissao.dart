@@ -14,6 +14,12 @@ class AtribuirPermissao extends StatefulWidget {
 }
 
 class _AtribuirPermissaoState extends State<AtribuirPermissao> {
+  // Lista de itens para o dropdown
+  final List<String> _items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+  // Valor selecionado
+  String? _selectedFuncionario;
+  String? _selectedPermissao;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,11 +73,11 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
               },
             ),
             ListTile(
-              title: const Text('Atualizar Dados'),
+              title: const Text('Atribuir Permissão'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const AtualizarDados(),
+                    builder: (context) => const AtribuirPermissao(),
                   ),
                 );
               },
@@ -99,7 +105,103 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
           ],
         ),
       ),
-      body: Text("oi"),
+      body: Center(
+        child: Container(
+          height: 200,
+          width: 300,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Color(0xFF8DCBC8),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DropdownButton<String>(
+                hint: const Text('Selecionar Funcionario'),
+                value: _selectedFuncionario,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedFuncionario = newValue;
+                  });
+                },
+                items: _items.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(
+                  height: 20), // Adiciona espaçamento entre os DropdownButtons
+              DropdownButton<String>(
+                hint: const Text('Selecionar Localização'),
+                value: _selectedPermissao,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedPermissao = newValue;
+                  });
+                },
+                items: _items.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                height: 40,
+                width: 250,
+                child: TextButton(
+                  onPressed: () {
+                    // Adicionar lógica para associar localização ao funcionário
+                    if (_selectedFuncionario != null &&
+                        _selectedPermissao != null) {
+                      // Implementar a lógica de associação aqui
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Localização $_selectedPermissao atribuída a $_selectedFuncionario'),
+                        ),
+                      );
+                    } else {
+                      // Mensagem de erro caso algum campo não esteja selecionado
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Por favor, selecione o funcionário e a localização.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Atribuir Localização',
+                    style: TextStyle(
+                      color: Color(0xFF8DCBC8),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(
+                        color: Color(0xFF8DCBC8),
+                        width: 2.0,
+                      ),
+                    ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
