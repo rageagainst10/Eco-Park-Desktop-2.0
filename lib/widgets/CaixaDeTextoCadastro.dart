@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CaixaDeTextoCadastro extends StatelessWidget {
   final String texto;
   final TextEditingController controller;
+  final Function(String)? onChanged; // Adiciona o parâmetro onChanged
 
   const CaixaDeTextoCadastro({
     Key? key,
     required this.texto,
     required this.controller,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class CaixaDeTextoCadastro extends StatelessWidget {
             contentPadding: EdgeInsets.all(8.0),
           ),
           controller: controller,
+          onChanged: onChanged,
         ),
       ),
     );

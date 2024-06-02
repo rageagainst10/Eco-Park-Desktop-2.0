@@ -44,6 +44,8 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
   String? _mimeType;
   String? _imageName;
   File? _imagem;
+  String? _confirmarSenhaErrorMessage; // Mensagem de erro para a senha
+  String? _senhaErrorMessage; // Mensagem de erro para a senha
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
@@ -61,6 +63,18 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
   }
 
   void _cadastrarFuncionario() async {
+
+    if (_senhaController.text != _confirmarSenhaController.text) {
+      setState(() {
+        _confirmarSenhaErrorMessage = 'As senhas não coincidem.';
+      });
+      return; // Não realiza o cadastro
+    } else {
+      setState(() {
+        _confirmarSenhaErrorMessage = null; // Limpa a mensagem de erro se as senhas forem iguais
+      });
+    }
+
     // Criar uma instância do modelo de dados com os valores dos campos de texto
     FormularioData data = FormularioData(
       nome: _nomeController.text,
@@ -98,239 +112,281 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarPersonalizado(
-        text:
+    return WillPopScope(
+        onWillPop: () async{
+          if (_senhaController.text != _confirmarSenhaController.text) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('As senhas não coincidem.')),
+            );
+            return false; // Impede o retorno
+          }
+          return true; // Permite o retorno
+        },
+        child:  Scaffold(
+          appBar: AppBarPersonalizado(
+            text:
             'Cadastro de Funcionários', // Passando o texto desejado para o AppBarPersonalizado
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFF8DCBC8),
-              ),
-              child: Text(
-                'Outras Páginas',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text('Gerenciamento de Reservas'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => GerenciamentoDeReserva()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Gerenciamento de Premios'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => GerenciamentoDePremios()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Cadastro de Localização'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => CadastroDeLocalizacao()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Atribuir Permissão'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AtribuirPermissao()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Atualizar Dados'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AtualizarDados()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Sair'),
-              onTap: () async {
-                await _authService.logout();
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Container(
-          width: 350,
-          height: 500,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: const Color(0xFF8DCBC8),
-              width: 2.0,
-            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              const Text(
-                "Cadastrar Funcionário",
-                style: TextStyle(
-                  color: Color(0xFF8DCBC8),
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Nome',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(8.0),
-                        ),
-                        controller: _nomeController,
-                      ),
-                    ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF8DCBC8),
                   ),
-                  Container(
-                    width: 150,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Sobrenome',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(8.0),
-                        ),
-                        controller: _sobrenomeController,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              CaixaDeTextoCadastro(
-                texto: 'E-mail',
-                controller: _emailController,
-              ),
-              const SizedBox(height: 15),
-              CaixaDeTextoCadastro(
-                texto: 'Senha',
-                controller: _senhaController,
-              ),
-              const SizedBox(height: 15),
-              CaixaDeTextoCadastro(
-                texto: 'Confirmar Senha',
-                controller: _confirmarSenhaController,
-              ),
-              const SizedBox(height: 15),
-              Container(
-                height: 40,
-                width: 315,
-                child: TextButton(
-                  onPressed: _getImage,
-                  child: const Text(
-                    'Escolher Imagem',
+                  child: Text(
+                    'Outras Páginas',
                     style: TextStyle(
-                      color: Color(0xFF8DCBC8),
-                    ),
-                  ),
-                  style: ButtonStyle(
-                    side: MaterialStateProperty.all<BorderSide>(
-                      const BorderSide(
-                        color: Color(0xFF8DCBC8),
-                        width: 2.0,
-                      ),
-                    ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                      color: Colors.white,
+                      fontSize: 24,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                height: 40,
-                width: 315,
-                child: TextButton(
-                  onPressed: () {
-                    _cadastrarFuncionario();
+                ListTile(
+                  title: Text('Gerenciamento de Reservas'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => GerenciamentoDeReserva()),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text('Gerenciamento de Premios'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => GerenciamentoDePremios()),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text('Cadastro de Localização'),
+                  onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) => CadastroDeLocalizacao()),
                     );
-                  }, // Corrigido o chamado do método
-                  style: ButtonStyle(
-                    side: MaterialStateProperty.all<BorderSide>(
-                      const BorderSide(
-                        color: Color(0xFF8DCBC8),
-                        width: 2.0,
-                      ),
-                    ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Cadastrar',
-                    style: TextStyle(
-                      color: Color(0xFF8DCBC8),
-                    ),
-                  ),
+                  },
+                ),
+                ListTile(
+                  title: Text('Atribuir Permissão'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AtribuirPermissao()),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text('Atualizar Dados'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AtualizarDados()),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text('Sair'),
+                  onTap: () async {
+                    await _authService.logout();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Login()),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          body: Center(
+            child: Container(
+              width: 350,
+              height: 500,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(0xFF8DCBC8),
+                  width: 2.0,
                 ),
               ),
-              _imagem != null // Exibe a imagem se ela foi selecionada
-                  ? Image.memory(
-                      _imageData!,
-                      width: 100, // Ajuste a largura conforme necessário
-                      height: 100, // Ajuste a altura conforme necessário
-                    )
-                  : const SizedBox
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Cadastrar Funcionário",
+                    style: TextStyle(
+                      color: Color(0xFF8DCBC8),
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 150,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Nome',
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.all(8.0),
+                            ),
+                            controller: _nomeController,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 150,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Sobrenome',
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.all(8.0),
+                            ),
+                            controller: _sobrenomeController,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  CaixaDeTextoCadastro(
+                    texto: 'E-mail',
+                    controller: _emailController,
+                  ),
+                  const SizedBox(height: 15),
+                  CaixaDeTextoCadastro(
+                    texto: 'Senha',
+                    controller: _senhaController,
+                    onChanged: (_) => _definesenhaErroMessage(),
+                  ),
+                  const SizedBox(height: 15),
+                  CaixaDeTextoCadastro(
+                    texto: 'Confirmar Senha',
+                    controller: _confirmarSenhaController,
+                    onChanged: (_) => _validateConfirmedPassword(),
+                  ),
+                  if (_confirmarSenhaErrorMessage != null) // Exibe mensagem de erro se as senhas não coincidirem
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        _confirmarSenhaErrorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ),
+                  const SizedBox(height: 15),
+                  Container(
+                    height: 40,
+                    width: 315,
+                    child: TextButton(
+                      onPressed: _getImage,
+                      child: const Text(
+                        'Escolher Imagem',
+                        style: TextStyle(
+                          color: Color(0xFF8DCBC8),
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        side: MaterialStateProperty.all<BorderSide>(
+                          const BorderSide(
+                            color: Color(0xFF8DCBC8),
+                            width: 2.0,
+                          ),
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Container(
+                    height: 40,
+                    width: 315,
+                    child: TextButton(
+                      onPressed: _senhaController.text == _confirmarSenhaController.text
+                          ? () {
+                        _cadastrarFuncionario();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => CadastroDeLocalizacao()),
+                        );
+                      } : null, // Corrigido o chamado do método
+                      style: ButtonStyle(
+                        side: MaterialStateProperty.all<BorderSide>(
+                          const BorderSide(
+                            color: Color(0xFF8DCBC8),
+                            width: 2.0,
+                          ),
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cadastrar',
+                        style: TextStyle(
+                          color: Color(0xFF8DCBC8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _imagem != null // Exibe a imagem se ela foi selecionada
+                      ? Image.memory(
+                    _imageData!,
+                    width: 100, // Ajuste a largura conforme necessário
+                    height: 100, // Ajuste a altura conforme necessário
+                  )
+                      : const SizedBox
                       .shrink(), // Não exibe nada se não houver imagem
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
+  }
+  void _validateConfirmedPassword() {
+    setState(() {
+      _confirmarSenhaErrorMessage = _senhaController.text == _confirmarSenhaController.text ? null : 'As senhas não coincidem.';
+    });
+  }
+
+  bool _validadePassword(){
+    bool temMaiuscula = _senhaController.text.contains(RegExp(r'[A-Z]'));
+    bool temMinuscula = _senhaController.text.contains(RegExp(r'[a-z]'));
+    bool temNumero = _senhaController.text.contains(RegExp(r'[0-9]'));
+    bool temTamanhoCorreto = _senhaController.text.length >= 7;
+    bool isSenhaCorreta = temMaiuscula && temMinuscula && temNumero && temTamanhoCorreto;
+
+    return isSenhaCorreta;
+  }
+
+  void _definesenhaErroMessage() {
+    setState(() {
+      _senhaErrorMessage = _validadePassword() ? null : 'A senha deve conter um caracter maiúsculo, um minúsculo e no mínimo 7 caracteres.';
+    });
   }
 }
