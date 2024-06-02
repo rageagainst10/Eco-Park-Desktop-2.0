@@ -13,7 +13,6 @@ import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'dart:typed_data';
-import 'package:image_picker/image_picker.dart';
 import '../main.dart';
 import '../models/FormularioModel.dart'; // Para File
 import 'package:mime/mime.dart';
@@ -116,7 +115,6 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
   }
 
   String? _userRole;
-  bool _isLoadingRole = false;
 
   @override
   void initState() {
@@ -128,12 +126,10 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
       final userRole = await _storageService.getUserRole();
       setState(() {
         _userRole = userRole;
-        _isLoadingRole = false;
       });
     } catch (e) {
       // Tratar erro ao obter o papel do usuário
       setState(() {
-        _isLoadingRole = false;
       });
       print('Erro ao obter papel do usuário: $e');
     }

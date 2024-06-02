@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:dio/dio.dart';
 import 'package:ecoparkdesktop/models/FuncionarioModel.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
 
 import '../services/storage_service.dart';
 

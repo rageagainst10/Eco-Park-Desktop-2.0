@@ -1,4 +1,3 @@
-import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:flutter/material.dart';
 
 class AppBarPersonalizado extends StatelessWidget

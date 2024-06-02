@@ -4,7 +4,6 @@ import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoPersonalizadoSenha.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoparkdesktop/services/auth_service.dart';
-import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../repositories/gerenciamentoDeReservasRepository.dart';

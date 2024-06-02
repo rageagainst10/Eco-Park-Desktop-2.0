@@ -2,7 +2,6 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ecoparkdesktop/models/user_model.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../services/storage_service.dart'; // Importe seu UserModel
 
