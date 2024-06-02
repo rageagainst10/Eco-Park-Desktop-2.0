@@ -1,3 +1,6 @@
+import 'package:ecoparkdesktop/models/FuncionarioModel.dart';
+import 'package:ecoparkdesktop/models/LocationModel.dart';
+import 'package:ecoparkdesktop/repositories/GerenciamentoDeReservasRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoparkdesktop/pages/atualizarDados.dart';
 import 'package:ecoparkdesktop/pages/cadastroLocalizacao.dart';
@@ -8,9 +11,11 @@ import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:get_it/get_it.dart';
 
 import '../main.dart';
+import '../repositories/PermissaoRepository.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import 'cadastroFuncionario.dart';
+import 'package:ecoparkdesktop/repositories/FuncionarioRepository.dart';
 
 class AtribuirPermissao extends StatefulWidget {
   const AtribuirPermissao({Key? key}) : super(key: key);
@@ -24,12 +29,21 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
   final AuthService _authService =
   getIt<AuthService>(); // Obter instância do AuthService
 
+  final PermissaoRepository _permissaoRepository = PermissaoRepository(GetIt.I<StorageService>());
+
   String? _userRole;
+
+  late List<Funcionario> _funcionarios;
+  late List<LocationModel> _localizacoes;
+
+  String? _selectedFuncionarioId; // ID do funcionário selecionado
+  String? _selectedLocationId;    // ID da localização selecionada
 
   @override
   void initState() {
     super.initState();
     _getUserRole(); // Carrega o papel do usuário ao iniciar a tela
+    _carregarFuncionariosELocalizacoes();
   }
   Future<void> _getUserRole() async {
     try {
@@ -42,6 +56,31 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
       setState(() {
       });
       print('Erro ao obter papel do usuário: $e');
+    }
+  }
+
+  Future<void> _carregarFuncionariosELocalizacoes() async {
+    try {
+      final token = await _storageService.getToken();
+      if (token == null) {
+        throw Exception('Usuário não autenticado');
+      }
+
+      final todosFuncionarios  = await FuncionarioRepository(_storageService).getFuncionarios();
+      final funcionarios = todosFuncionarios.sublist(1); // Exclui o primeiro elemento da lista
+      setState(() {
+        _funcionarios = funcionarios;
+      });
+
+      final localizacoes = await ReservaRepository(_storageService).getLocations();
+      setState(() {
+        _localizacoes = localizacoes;
+      });
+
+      // e preencher as listas _funcionarios e _localizacoes
+    } catch (e) {
+      // Tratar erro
+      print('Erro ao carregar funcionários e localizações: $e');
     }
   }
 
@@ -179,16 +218,16 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
             children: [
               DropdownButton<String>(
                 hint: const Text('Selecionar Funcionario'),
-                value: _selectedFuncionario,
+                value: _selectedFuncionarioId,
                 onChanged: (String? newValue) {
                   setState(() {
-                    _selectedFuncionario = newValue;
+                    _selectedFuncionarioId = newValue;
                   });
                 },
-                items: _items.map<DropdownMenuItem<String>>((String value) {
+                items: _funcionarios.map((funcionario) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: funcionario.id,
+                    child: Text(funcionario.firstName),
                   );
                 }).toList(),
               ),
@@ -196,16 +235,16 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
                   height: 20), // Adiciona espaçamento entre os DropdownButtons
               DropdownButton<String>(
                 hint: const Text('Selecionar Localização'),
-                value: _selectedPermissao,
+                value: _selectedLocationId,
                 onChanged: (String? newValue) {
                   setState(() {
-                    _selectedPermissao = newValue;
+                    _selectedLocationId = newValue;
                   });
                 },
-                items: _items.map<DropdownMenuItem<String>>((String value) {
+                items: _localizacoes.map((localizacao) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: localizacao.id,
+                    child: Text(localizacao.name),
                   );
                 }).toList(),
               ),
@@ -214,24 +253,31 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
                 height: 40,
                 width: 250,
                 child: TextButton(
-                  onPressed: () {
-                    // Adicionar lógica para associar localização ao funcionário
-                    if (_selectedFuncionario != null &&
-                        _selectedPermissao != null) {
-                      // Implementar a lógica de associação aqui
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'Localização $_selectedPermissao atribuída a $_selectedFuncionario'),
-                        ),
-                      );
+                  onPressed: () async {
+                    if (_selectedFuncionarioId != null && _selectedLocationId != null) {
+                      try {
+                        await _permissaoRepository.atribuirLocalizacao(_selectedFuncionarioId!, _selectedLocationId!);
+
+                        // Encontra o funcionário pelo ID
+                        final funcionarioSelecionado = _funcionarios.firstWhere((f) => f.id == _selectedFuncionarioId);
+                        // Encontra a localização pelo ID
+                        final localizacaoSelecionada = _localizacoes.firstWhere((l) => l.id == _selectedLocationId);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Localização ${localizacaoSelecionada.name} atribuída a ${funcionarioSelecionado.firstName} ${funcionarioSelecionado.lastName}',
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Erro: $e')),
+                        );
+                      }
                     } else {
-                      // Mensagem de erro caso algum campo não esteja selecionado
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Por favor, selecione o funcionário e a localização.'),
-                        ),
+                        const SnackBar(content: Text('Por favor, selecione o funcionário e a localização.')),
                       );
                     }
                   },

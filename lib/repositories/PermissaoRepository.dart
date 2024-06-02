@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class PermissaoRepository {
   final StorageService _storageService;
-  final String _baseUrl = 'https://apim-dev-ecopark-api.azure-api.net/Employee'; // URL base da API
+  final String _baseUrl = 'https://wa-dev-ecopark-api.azurewebsites.net/Employee'; // URL base da API
 
   PermissaoRepository(this._storageService);
 
@@ -24,12 +24,11 @@ class PermissaoRepository {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Ocp-Apim-Subscription-Key': 'SUA_CHAVE_DE_ASSINATURA',
           'Authorization': 'Bearer $token',
         },
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('Permissão atribuída com sucesso!');
       } else {
         final errorData = jsonDecode(response.body);
