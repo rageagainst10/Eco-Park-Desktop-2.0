@@ -33,6 +33,27 @@ class _CadastroDeLocalizacaoState extends State<CadastroDeLocalizacao> {
   final AuthService _authService =
   getIt<AuthService>(); // Obter instância do AuthService
 
+  String? _userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserRole(); // Carrega o papel do usuário ao iniciar a tela
+  }
+  Future<void> _getUserRole() async {
+    try {
+      final userRole = await _storageService.getUserRole();
+      setState(() {
+        _userRole = userRole;
+      });
+    } catch (e) {
+      // Tratar erro ao obter o papel do usuário
+      setState(() {
+      });
+      print('Erro ao obter papel do usuário: $e');
+    }
+  }
+
 
   final TextEditingController _tempoLRController = TextEditingController();
   final TextEditingController _taxaReservaController = TextEditingController();
@@ -124,15 +145,29 @@ class _CadastroDeLocalizacaoState extends State<CadastroDeLocalizacao> {
                 );
               },
             ),
-            ListTile(
-              title: Text('Cadastro de Funcionario'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => CadastroDeFuncionario()),
-                );
+            FutureBuilder<String?>(
+              future: _storageService.getUserRole(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Indicador de carregamento
+                } else if (snapshot.hasError) {
+                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                } else {
+                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  return _userRole != 'PlatformAdministrator'
+                      ? ListTile(
+                    title: Text('Cadastro de Funcionario'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => CadastroDeFuncionario()),
+                      );
+                    },
+                  )
+                      : Container();
+                }
               },
-            ),
+            ),//Insert Funcionario
             ListTile(
               title: Text('Atribuir Permissão'),
               onTap: () {

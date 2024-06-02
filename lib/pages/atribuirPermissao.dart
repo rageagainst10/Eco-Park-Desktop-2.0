@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 import '../main.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
+import 'cadastroFuncionario.dart';
 
 class AtribuirPermissao extends StatefulWidget {
   const AtribuirPermissao({Key? key}) : super(key: key);
@@ -23,6 +24,27 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
   final AuthService _authService =
   getIt<AuthService>(); // Obter instância do AuthService
 
+  String? _userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserRole(); // Carrega o papel do usuário ao iniciar a tela
+  }
+  Future<void> _getUserRole() async {
+    try {
+      final userRole = await _storageService.getUserRole();
+      setState(() {
+        _userRole = userRole;
+      });
+    } catch (e) {
+      // Tratar erro ao obter o papel do usuário
+      setState(() {
+      });
+      print('Erro ao obter papel do usuário: $e');
+    }
+  }
+
   // Lista de itens para o dropdown
   final List<String> _items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   // Valor selecionado
@@ -33,7 +55,7 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarPersonalizado(
-        text: 'Atribuir Localização',
+        text: 'Atribuir Permissão',
       ),
       drawer: Drawer(
         child: ListView(
@@ -71,26 +93,52 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Cadastro de Localização'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CadastroDeLocalizacao(),
-                  ),
-                );
+            FutureBuilder<String?>(
+              future: _storageService.getUserRole(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Indicador de carregamento
+                } else if (snapshot.hasError) {
+                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                } else {
+                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  return _userRole != 'Employee' && _userRole != 'PlatformAdministrator'
+                      ? ListTile(
+                    title: Text('Cadastro de Localização'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => CadastroDeLocalizacao()),
+                      );
+                    },
+                  )
+                      : Container();
+                }
               },
-            ),
-            ListTile(
-              title: const Text('Atribuir Permissão'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AtribuirPermissao(),
-                  ),
-                );
+            ),//Insert Location
+            FutureBuilder<String?>(
+              future: _storageService.getUserRole(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Indicador de carregamento
+                } else if (snapshot.hasError) {
+                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                } else {
+                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  return _userRole != 'PlatformAdministrator'
+                      ? ListTile(
+                    title: Text('Cadastro de Funcionario'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => CadastroDeFuncionario()),
+                      );
+                    },
+                  )
+                      : Container();
+                }
               },
-            ),
+            ),//Insert Funcionario
             ListTile(
               title: const Text('Atualizar Dados'),
               onTap: () {

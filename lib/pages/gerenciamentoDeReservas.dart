@@ -34,10 +34,26 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   List<ParkingSpaceModel> _vagasEditadas = [];
   bool _isLoading = true;
 
+  String? _userRole;
   @override
   void initState() {
     super.initState();
+    _getUserRole();
     _loadEstabelecimentos();
+  }
+
+  Future<void> _getUserRole() async {
+    try {
+      final userRole = await _storageService.getUserRole();
+      setState(() {
+        _userRole = userRole;
+      });
+    } catch (e) {
+      // Tratar erro ao obter o papel do usuário
+      setState(() {
+      });
+      print('Erro ao obter papel do usuário: $e');
+    }
   }
 
   @override
@@ -147,10 +163,38 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
           ),
           _buildDrawerItem(
               context, 'Gerenciamento de Premios', GerenciamentoDePremios()),
-          _buildDrawerItem(
-              context, 'Cadastro de Localizacao', CadastroDeLocalizacao()),
-          _buildDrawerItem(
-              context, 'Cadastro de Funcionario', CadastroDeFuncionario()),
+          FutureBuilder<String?>(
+            future: _storageService.getUserRole(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator(); // Indicador de carregamento
+              } else if (snapshot.hasError) {
+                return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+              } else {
+                _userRole = snapshot.data; // Atribui o papel do usuário
+                return _userRole != 'PlatformAdministrator' && _userRole != 'Employee'
+                    ? _buildDrawerItem(
+                    context, 'Cadastro de Localização', CadastroDeLocalizacao())
+                    : Container();
+              }
+            },
+          ),//Insert Location
+          FutureBuilder<String?>(
+            future: _storageService.getUserRole(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator(); // Indicador de carregamento
+              } else if (snapshot.hasError) {
+                return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+              } else {
+                _userRole = snapshot.data; // Atribui o papel do usuário
+                return _userRole != 'PlatformAdministrator'
+                    ? _buildDrawerItem(
+                    context, 'Cadastro de Funcionario', CadastroDeFuncionario())
+                    : Container();
+              }
+            },
+          ), //Insert Employee
           _buildDrawerItem(context, 'Atribuir Permissão', AtribuirPermissao()),
           _buildDrawerItem(context, 'Atualizar Dados', AtualizarDados()),
           _buildDrawerItemLogout(context, 'Sair', Login()),
@@ -220,7 +264,21 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                 ),
                 _buildLegenda(),
                 SizedBox(height: 16), // Espaçamento entre a legenda e o botão
-                _buildSaveButton(),
+                FutureBuilder<String?>(
+                  future: _storageService.getUserRole(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // Indicador de carregamento
+                    } else if (snapshot.hasError) {
+                      return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                    } else {
+                      _userRole = snapshot.data; // Atribui o papel do usuário
+                      return _userRole != 'PlatformAdministrator'
+                          ? _buildSaveButton()
+                      : Container();
+                    }
+                  },
+                ),
                 SizedBox(
                     height:
                         16), // Espaçamento entre o botão e a parte de baixo do container

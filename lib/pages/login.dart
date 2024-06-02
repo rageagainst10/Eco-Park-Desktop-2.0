@@ -85,7 +85,7 @@ class _LoginState extends State<Login> {
 
       final locations = await ReservaRepository(_storageService).getLocations();
 
-      if (locations.isEmpty) {
+      if (locations.isEmpty && role != 'Employee' && role != 'PlatformAdministrator') {
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => CadastroDeLocalizacao()));
       } else {

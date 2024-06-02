@@ -185,15 +185,29 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                     );
                   },
                 ),
-                ListTile(
-                  title: Text('Cadastro de Localização'),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => CadastroDeLocalizacao()),
-                    );
+                FutureBuilder<String?>(
+                  future: _storageService.getUserRole(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // Indicador de carregamento
+                    } else if (snapshot.hasError) {
+                      return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                    } else {
+                      _userRole = snapshot.data; // Atribui o papel do usuário
+                      return _userRole != 'Employee' && _userRole != 'PlatformAdministrator'
+                          ? ListTile(
+                        title: Text('Cadastro de Localização'),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => CadastroDeLocalizacao()),
+                          );
+                        },
+                      )
+                          : Container();
+                    }
                   },
-                ),
+                ),//Insert Location
                 ListTile(
                   title: Text('Atribuir Permissão'),
                   onTap: () {
