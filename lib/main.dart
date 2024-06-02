@@ -1,5 +1,5 @@
 import 'package:ecoparkdesktop/pages/login.dart';
-import 'package:ecoparkdesktop/repositories/auth_repository.dart';
+import 'package:ecoparkdesktop/repositories/AuthRepository.dart';
 import 'package:ecoparkdesktop/services/auth_service.dart';
 import 'package:ecoparkdesktop/services/storage_service.dart';
 import 'package:flutter/material.dart';

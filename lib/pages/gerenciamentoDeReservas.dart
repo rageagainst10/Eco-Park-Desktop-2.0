@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/LocationModel.dart';
 import '../models/ParkingSpaceModel.dart';
-import '../repositories/gerenciamentoDeReservasRepository.dart';
+import '../repositories/GerenciamentoDeReservasRepository.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/AppBarPersonalizado.dart';

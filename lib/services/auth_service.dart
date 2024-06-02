@@ -1,7 +1,7 @@
 import 'package:ecoparkdesktop/main.dart';
 
-import '../models/user_model.dart';
-import '../repositories/auth_repository.dart';
+import '../models/UserModel.dart';
+import '../repositories/AuthRepository.dart';
 import '../services/storage_service.dart';
 
 class AuthService {
