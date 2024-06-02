@@ -74,7 +74,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
             null; // Limpa a mensagem de erro se as senhas forem iguais
       });
     }
-    _definesenhaErroMessage();
+    _definesenhaErrorMessage();
     if (_senhaErrorMessage != null) {
       return;
     }
