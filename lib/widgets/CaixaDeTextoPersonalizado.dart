@@ -15,7 +15,8 @@ class CaixaDeTextoPersonalizado extends StatefulWidget {
     this.onSubmitted,
   }) : super(key: key);
   @override
-  _CaixaDeTextoPersonalizadoState createState() => _CaixaDeTextoPersonalizadoState();
+  _CaixaDeTextoPersonalizadoState createState() =>
+      _CaixaDeTextoPersonalizadoState();
 }
 
 class _CaixaDeTextoPersonalizadoState extends State<CaixaDeTextoPersonalizado> {
@@ -23,8 +24,7 @@ class _CaixaDeTextoPersonalizadoState extends State<CaixaDeTextoPersonalizado> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      SizedBox(
+    return SizedBox(
       width: 350,
       child: TextField(
         controller: widget.controller,
@@ -44,14 +44,12 @@ class _CaixaDeTextoPersonalizadoState extends State<CaixaDeTextoPersonalizado> {
         onSubmitted: widget.onSubmitted,
         onChanged: (value) {
           setState(() {
-            _errorMessage = AuthService.validarEmail(value) ? null : 'Formato de e-mail inválido';
+            _errorMessage = AuthService.validarEmail(value)
+                ? null
+                : 'Formato de e-mail inválido';
           });
         },
       ),
-
     );
   }
-
-
 }
-

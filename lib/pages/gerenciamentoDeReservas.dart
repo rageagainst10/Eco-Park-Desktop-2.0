@@ -24,7 +24,7 @@ class GerenciamentoDeReserva extends StatefulWidget {
 class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   final StorageService _storageService = getIt<StorageService>();
   final AuthService _authService =
-  getIt<AuthService>(); // Obter instância do AuthService
+      getIt<AuthService>(); // Obter instância do AuthService
 
   final TextEditingController _textController = TextEditingController();
 
@@ -50,8 +50,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
       });
     } catch (e) {
       // Tratar erro ao obter o papel do usuário
-      setState(() {
-      });
+      setState(() {});
       print('Erro ao obter papel do usuário: $e');
     }
   }
@@ -140,7 +139,7 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarPersonalizado(
-        text: 'Gerenciamento de reservas',
+        text: 'Gerenciamento de Reservas',
       ),
       drawer: _buildDrawer(context),
       body: Center(
@@ -169,28 +168,31 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // Indicador de carregamento
               } else if (snapshot.hasError) {
-                return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                return Text(
+                    'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
               } else {
                 _userRole = snapshot.data; // Atribui o papel do usuário
-                return _userRole != 'PlatformAdministrator' && _userRole != 'Employee'
-                    ? _buildDrawerItem(
-                    context, 'Cadastro de Localização', CadastroDeLocalizacao())
+                return _userRole != 'PlatformAdministrator' &&
+                        _userRole != 'Employee'
+                    ? _buildDrawerItem(context, 'Cadastro de Localização',
+                        CadastroDeLocalizacao())
                     : Container();
               }
             },
-          ),//Insert Location
+          ), //Insert Location
           FutureBuilder<String?>(
             future: _storageService.getUserRole(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // Indicador de carregamento
               } else if (snapshot.hasError) {
-                return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                return Text(
+                    'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
               } else {
                 _userRole = snapshot.data; // Atribui o papel do usuário
                 return _userRole != 'PlatformAdministrator'
-                    ? _buildDrawerItem(
-                    context, 'Cadastro de Funcionario', CadastroDeFuncionario())
+                    ? _buildDrawerItem(context, 'Cadastro de Funcionario',
+                        CadastroDeFuncionario())
                     : Container();
               }
             },
@@ -201,12 +203,13 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // Indicador de carregamento
               } else if (snapshot.hasError) {
-                return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                return Text(
+                    'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
               } else {
                 _userRole = snapshot.data; // Atribui o papel do usuário
                 return _userRole != 'PlatformAdministrator'
                     ? _buildDrawerItem(
-                    context, 'Atribuir Permissão', AtribuirPermissao())
+                        context, 'Atribuir Permissão', AtribuirPermissao())
                     : Container();
               }
             },
@@ -228,7 +231,8 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
     );
   }
 
-  Widget _buildDrawerItemLogout(BuildContext context, String title, Widget page) {
+  Widget _buildDrawerItemLogout(
+      BuildContext context, String title, Widget page) {
     return ListTile(
       title: Text(title),
       onTap: () async {
@@ -285,12 +289,13 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(); // Indicador de carregamento
                     } else if (snapshot.hasError) {
-                      return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                      return Text(
+                          'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
                     } else {
                       _userRole = snapshot.data; // Atribui o papel do usuário
                       return _userRole != 'PlatformAdministrator'
                           ? _buildSaveButton()
-                      : Container();
+                          : Container();
                     }
                   },
                 ),

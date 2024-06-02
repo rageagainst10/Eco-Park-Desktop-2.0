@@ -58,7 +58,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     setState(() {
       _imagem = File(pickedFile.path);
     }); // Atualiza o estado para exibir a imagem selecionada (opcional)
-    }
+  }
 
   void _cadastrarFuncionario() async {
     if (_senhaController.text != _confirmarSenhaController.text) {
@@ -119,6 +119,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     super.initState();
     _getUserRole(); // Carrega o papel do usuário ao iniciar a tela
   }
+
   Future<void> _getUserRole() async {
     try {
       final userRole = await _storageService.getUserRole();
@@ -127,12 +128,10 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
       });
     } catch (e) {
       // Tratar erro ao obter o papel do usuário
-      setState(() {
-      });
+      setState(() {});
       print('Erro ao obter papel do usuário: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -191,46 +190,51 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(); // Indicador de carregamento
                     } else if (snapshot.hasError) {
-                      return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                      return Text(
+                          'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
                     } else {
                       _userRole = snapshot.data; // Atribui o papel do usuário
-                      return _userRole != 'Employee' && _userRole != 'PlatformAdministrator'
+                      return _userRole != 'Employee' &&
+                              _userRole != 'PlatformAdministrator'
                           ? ListTile(
-                        title: Text('Cadastro de Localização'),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => CadastroDeLocalizacao()),
-                          );
-                        },
-                      )
+                              title: Text('Cadastro de Localização'),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CadastroDeLocalizacao()),
+                                );
+                              },
+                            )
                           : Container();
                     }
                   },
-                ),//Insert Location
+                ), //Insert Location
                 FutureBuilder<String?>(
                   future: _storageService.getUserRole(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(); // Indicador de carregamento
                     } else if (snapshot.hasError) {
-                      return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                      return Text(
+                          'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
                     } else {
                       _userRole = snapshot.data; // Atribui o papel do usuário
                       return _userRole != 'PlatformAdministrator'
                           ? ListTile(
-                        title: Text('Atribuir Permissão'),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => AtribuirPermissao()),
-                          );
-                        },
-                      )
+                              title: Text('Atribuir Permissão'),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AtribuirPermissao()),
+                                );
+                              },
+                            )
                           : Container();
                     }
                   },
-                ),//Atribuir Permissao
+                ), //Atribuir Permissao
                 ListTile(
                   title: Text('Atualizar Dados'),
                   onTap: () {
@@ -363,51 +367,60 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator(); // Indicador de carregamento
                       } else if (snapshot.hasError) {
-                        return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                        return Text(
+                            'Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
                       } else {
                         _userRole = snapshot.data; // Atribui o papel do usuário
                         return _userRole == 'PlatformAdministrator'
                             ? DropdownButtonFormField<String>(
-                          hint: Text('Selecione o cargo do funcionário'),
-                          value: _cargoSelecionado,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _cargoSelecionado = newValue;
-                            });
-                          },
-                          items: [
-                            _buildDropdownMenuItem('Administrador de Plataforma',
-                                'PlataformAdministrator'),
-                            _buildDropdownMenuItem('Administrador', 'Administrator'),
-                            _buildDropdownMenuItem('Funcionário', 'Employee'),
-                          ].toList(),
-                        )
-                            :  _userRole == 'Administrator'
-                            ? DropdownButtonFormField<String>(
-                          hint: Text('Selecione o cargo do funcionário'),
-                          value: _cargoSelecionado,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _cargoSelecionado = newValue;
-                            });
-                          },
-                          items: [
-                            _buildDropdownMenuItem('Administrador', 'Administrator'),
-                            _buildDropdownMenuItem('Funcionário', 'Employee'),
-                          ].toList(),
-                        )
-                            : DropdownButtonFormField<String>(
-                          hint: Text('Selecione o cargo do funcionário'),
-                          value: _cargoSelecionado,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _cargoSelecionado = newValue;
-                            });
-                          },
-                          items: [
-                            _buildDropdownMenuItem('Funcionário', 'Employee'),
-                          ].toList(),
-                        );
+                                hint: Text('Selecione o cargo do funcionário'),
+                                value: _cargoSelecionado,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _cargoSelecionado = newValue;
+                                  });
+                                },
+                                items: [
+                                  _buildDropdownMenuItem(
+                                      'Administrador de Plataforma',
+                                      'PlataformAdministrator'),
+                                  _buildDropdownMenuItem(
+                                      'Administrador', 'Administrator'),
+                                  _buildDropdownMenuItem(
+                                      'Funcionário', 'Employee'),
+                                ].toList(),
+                              )
+                            : _userRole == 'Administrator'
+                                ? DropdownButtonFormField<String>(
+                                    hint: Text(
+                                        'Selecione o cargo do funcionário'),
+                                    value: _cargoSelecionado,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _cargoSelecionado = newValue;
+                                      });
+                                    },
+                                    items: [
+                                      _buildDropdownMenuItem(
+                                          'Administrador', 'Administrator'),
+                                      _buildDropdownMenuItem(
+                                          'Funcionário', 'Employee'),
+                                    ].toList(),
+                                  )
+                                : DropdownButtonFormField<String>(
+                                    hint: Text(
+                                        'Selecione o cargo do funcionário'),
+                                    value: _cargoSelecionado,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _cargoSelecionado = newValue;
+                                      });
+                                    },
+                                    items: [
+                                      _buildDropdownMenuItem(
+                                          'Funcionário', 'Employee'),
+                                    ].toList(),
+                                  );
                       }
                     },
                   ),
@@ -430,8 +443,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                             width: 2.0,
                           ),
                         ),
-                        shape:
-                            WidgetStateProperty.all<RoundedRectangleBorder>(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -463,8 +475,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                             width: 2.0,
                           ),
                         ),
-                        shape:
-                            WidgetStateProperty.all<RoundedRectangleBorder>(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),

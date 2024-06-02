@@ -36,19 +36,18 @@ class _HomeGerenciamentoDePremiosState
   final TextEditingController quantidadeController = TextEditingController();
   final TextEditingController valorController = TextEditingController();
   final TextEditingController validadeController = TextEditingController();
-  final TextEditingController imagemController = TextEditingController();
 
   final StorageService _storageService = getIt<StorageService>();
-  final AuthService _authService =
-  getIt<AuthService>(); // Obter instância do AuthService
+  final AuthService _authService = getIt<AuthService>();
 
   String? _userRole;
 
   @override
   void initState() {
     super.initState();
-    _getUserRole(); // Carrega o papel do usuário ao iniciar a tela
+    _getUserRole();
   }
+
   Future<void> _getUserRole() async {
     try {
       final userRole = await _storageService.getUserRole();
@@ -56,9 +55,7 @@ class _HomeGerenciamentoDePremiosState
         _userRole = userRole;
       });
     } catch (e) {
-      // Tratar erro ao obter o papel do usuário
-      setState(() {
-      });
+      setState(() {});
       print('Erro ao obter papel do usuário: $e');
     }
   }
@@ -71,7 +68,6 @@ class _HomeGerenciamentoDePremiosState
     quantidadeController.dispose();
     valorController.dispose();
     validadeController.dispose();
-    imagemController.dispose();
     super.dispose();
   }
 
@@ -80,29 +76,24 @@ class _HomeGerenciamentoDePremiosState
     String quantidade = quantidadeController.text;
     String valor = valorController.text;
     String validade = validadeController.text;
-    String imagem = imagemController.text;
 
     if (nome.isNotEmpty &&
         quantidade.isNotEmpty &&
         valor.isNotEmpty &&
-        validade.isNotEmpty &&
-        imagem.isNotEmpty) {
+        validade.isNotEmpty) {
       setState(() {
         premios.add({
           'nome': nome,
           'quantidade': quantidade,
           'valor': valor,
           'validade': validade,
-          'imagem': imagem,
         });
       });
 
-      // Limpar os campos de texto após adicionar
       nomeController.clear();
       quantidadeController.clear();
       valorController.clear();
       validadeController.clear();
-      imagemController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Por favor, preencha todos os campos.')),
@@ -120,12 +111,10 @@ class _HomeGerenciamentoDePremiosState
     setState(() {
       premios.clear();
     });
-    // Limpar todos os campos de texto
     nomeController.clear();
     quantidadeController.clear();
     valorController.clear();
     validadeController.clear();
-    imagemController.clear();
     print("Todos os campos foram limpos.");
   }
 
@@ -133,8 +122,7 @@ class _HomeGerenciamentoDePremiosState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarPersonalizado(
-        text:
-            'Gerenciamento de premios', // Passando o texto desejado para o AppBarPersonalizado
+        text: 'Gerenciamento de premios',
       ),
       drawer: Drawer(
         child: ListView(
@@ -142,7 +130,7 @@ class _HomeGerenciamentoDePremiosState
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Color(0xFF8DCBC8),
+                color: Colors.transparent,
               ),
               child: Text(
                 'Outras Páginas',
@@ -165,21 +153,24 @@ class _HomeGerenciamentoDePremiosState
               future: _storageService.getUserRole(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Indicador de carregamento
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                  return Text(
+                      'Erro ao carregar o papel do usuário: ${snapshot.error}');
                 } else {
-                  _userRole = snapshot.data; // Atribui o papel do usuário
-                  return _userRole != 'Employee' && _userRole != 'PlatformAdministrator'
+                  _userRole = snapshot.data;
+                  return _userRole != 'Employee' &&
+                          _userRole != 'PlatformAdministrator'
                       ? ListTile(
-                    title: Text('Cadastro de Localização'),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => CadastroDeLocalizacao()),
-                      );
-                    },
-                  )
+                          title: Text('Cadastro de Localização'),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CadastroDeLocalizacao()),
+                            );
+                          },
+                        )
                       : Container();
                 }
               },
@@ -188,48 +179,51 @@ class _HomeGerenciamentoDePremiosState
               future: _storageService.getUserRole(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Indicador de carregamento
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                  return Text(
+                      'Erro ao carregar o papel do usuário: ${snapshot.error}');
                 } else {
-                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  _userRole = snapshot.data;
                   return _userRole != 'PlatformAdministrator'
                       ? ListTile(
-                    title: Text('Cadastro de Funcionario'),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => CadastroDeFuncionario()),
-                      );
-                    },
-                  )
+                          title: Text('Cadastro de Funcionario'),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CadastroDeFuncionario()),
+                            );
+                          },
+                        )
                       : Container();
                 }
               },
-            ),//Insert Funcionario
+            ),
             FutureBuilder<String?>(
               future: _storageService.getUserRole(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Indicador de carregamento
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                  return Text(
+                      'Erro ao carregar o papel do usuário: ${snapshot.error}');
                 } else {
-                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  _userRole = snapshot.data;
                   return _userRole != 'PlatformAdministrator'
                       ? ListTile(
-                    title: Text('Atribuir Permissão'),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => AtribuirPermissao()),
-                      );
-                    },
-                  )
+                          title: Text('Atribuir Permissão'),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => AtribuirPermissao()),
+                            );
+                          },
+                        )
                       : Container();
                 }
               },
-            ),//Atribuir Permissao
+            ),
             ListTile(
               title: Text('Atualizar Dados'),
               onTap: () {
@@ -253,6 +247,12 @@ class _HomeGerenciamentoDePremiosState
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Color(0xFF8DCBC8),
+              width: 1.0,
+            ),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -307,25 +307,42 @@ class _HomeGerenciamentoDePremiosState
                 ],
               ),
               SizedBox(height: 16),
-              TextField(
-                controller: imagemController,
-                decoration: InputDecoration(
-                  labelText: "URL da imagem",
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF8DCBC8)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      child: TextButton(
+                        onPressed: () {}, //_getImage,
+                        style: TextButton.styleFrom(
+                          side: BorderSide(color: Color(0xFF8DCBC8)),
+                          backgroundColor: Colors.white,
+                          foregroundColor: Color(0xFF8DCBC8),
+                        ),
+                        child: Text(
+                          "Adicionar Imagem",
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: adicionarProduto,
-                style: ElevatedButton.styleFrom(
-                  fixedSize: Size(200, 45),
-                  side: BorderSide(color: Color(0xFF8DCBC8)),
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                ),
-                child: Text("Adicionar Produto"),
+                  SizedBox(width: 16), // Espaço entre os botões
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      child: TextButton(
+                        onPressed: adicionarProduto,
+                        style: TextButton.styleFrom(
+                          side: BorderSide(color: Color(0xFF8DCBC8)),
+                          backgroundColor: Colors.white,
+                          foregroundColor: Color(0xFF8DCBC8),
+                        ),
+                        child: Text(
+                          "Adicionar Produto",
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               ListView.builder(
@@ -336,16 +353,6 @@ class _HomeGerenciamentoDePremiosState
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
-                      leading: premios[index]['imagem']!.isNotEmpty
-                          ? Image.network(
-                              premios[index]['imagem']!,
-                              width: 50,
-                              height: 50,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(Icons.error);
-                              },
-                            )
-                          : Icon(Icons.image),
                       title: Text(premios[index]['nome']!),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,7 +386,12 @@ class _HomeGerenciamentoDePremiosState
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                     ),
-                    child: Text("Limpar tudo"),
+                    child: Text(
+                      "Limpar tudo",
+                      style: TextStyle(
+                        color: Color(0xFF8DCBC8),
+                      ),
+                    ),
                   ),
                 ],
               ),
