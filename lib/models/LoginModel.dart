@@ -1,12 +1,12 @@
-class UserModel {
+class LoginModel {
   final String email;
   final String token; // Exemplo de outras propriedades que a API pode retornar
   // ... outras propriedades
 
-  UserModel({required this.email, required this.token}); // Construtor
+  LoginModel({required this.email, required this.token}); // Construtor
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory LoginModel.fromJson(Map<String, dynamic> json) {
+    return LoginModel(
       email: json['email'],
       token: json['token']
     );

@@ -9,6 +9,7 @@ import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
 import 'package:get_it/get_it.dart';
 
 import '../main.dart';
+import '../repositories/UsuarioRepository.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import 'cadastroFuncionario.dart';
@@ -25,10 +26,17 @@ class _AtualizarDadosState extends State<AtualizarDados> {
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _confirmarSenhaController =
       TextEditingController();
+  final TextEditingController _firstNameController =
+  TextEditingController();
+  final TextEditingController _lastNameController =
+  TextEditingController();
+  final TextEditingController _userTypeController =
+  TextEditingController();
 
   final StorageService _storageService = GetIt.I<StorageService>();
   final AuthService _authService =
   getIt<AuthService>(); // Obter instância do AuthService
+  final UsuarioRepository _usuarioRepository = UsuarioRepository(GetIt.I<StorageService>());
 
   String? _userRole;
 
@@ -210,7 +218,7 @@ class _AtualizarDadosState extends State<AtualizarDados> {
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: 'Nome',

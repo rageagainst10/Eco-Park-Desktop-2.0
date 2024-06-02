@@ -1,7 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:ecoparkdesktop/models/user_model.dart';
+import 'package:ecoparkdesktop/models/LoginModel.dart';
 
 import '../services/storage_service.dart'; // Importe seu UserModel
 
@@ -18,7 +18,7 @@ class AuthRepository {
     return await _storageService.getToken();
   }
 
-  Future<UserModel> login(String email, String senha) async {
+  Future<LoginModel> login(String email, String senha) async {
     final url = Uri.parse(_baseUrl + 'Login'); // Endpoint de login da sua API
 
     try {
@@ -40,7 +40,7 @@ class AuthRepository {
 
         //tratamento de erro para caso o usuário autenticado seja do tipo Client ou System
 
-        return UserModel.fromJson(data); // Crie um método fromJson no UserModel
+        return LoginModel.fromJson(data); // Crie um método fromJson no UserModel
       } else {
         // Lide com erros de autenticação (401, etc.)
         final errorData = jsonDecode(response.body);
