@@ -153,13 +153,23 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               context, 'Cadastro de Funcionario', CadastroDeFuncionario()),
           _buildDrawerItem(context, 'Atribuir Permissão', AtribuirPermissao()),
           _buildDrawerItem(context, 'Atualizar Dados', AtualizarDados()),
-          _buildDrawerItem(context, 'Sair', Login()),
+          _buildDrawerItemLogout(context, 'Sair', Login()),
         ],
       ),
     );
   }
 
   Widget _buildDrawerItem(BuildContext context, String title, Widget page) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => page));
+      },
+    );
+  }
+
+  Widget _buildDrawerItemLogout(BuildContext context, String title, Widget page) {
     return ListTile(
       title: Text(title),
       onTap: () async {
