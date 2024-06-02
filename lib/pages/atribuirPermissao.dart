@@ -84,12 +84,6 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
     }
   }
 
-  // Lista de itens para o dropdown
-  final List<String> _items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-  // Valor selecionado
-  String? _selectedFuncionario;
-  String? _selectedPermissao;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
