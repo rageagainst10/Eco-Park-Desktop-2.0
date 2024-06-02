@@ -54,13 +54,11 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     _imageName = pickedFile?.name;
     _mimeType = lookupMimeType(pickedFile!.path.split('/').last);
 
-    if (pickedFile != null) {
-      _imageData = await pickedFile.readAsBytes(); // Lê os bytes da imagem
-      setState(() {
-        _imagem = File(pickedFile.path);
-      }); // Atualiza o estado para exibir a imagem selecionada (opcional)
+    _imageData = await pickedFile.readAsBytes(); // Lê os bytes da imagem
+    setState(() {
+      _imagem = File(pickedFile.path);
+    }); // Atualiza o estado para exibir a imagem selecionada (opcional)
     }
-  }
 
   void _cadastrarFuncionario() async {
     if (_senhaController.text != _confirmarSenhaController.text) {
