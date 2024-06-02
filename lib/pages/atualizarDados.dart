@@ -146,16 +146,29 @@ class _AtualizarDadosState extends State<AtualizarDados> {
                 }
               },
             ),//Insert Funcionario
-            ListTile(
-              title: const Text('Atribuir Permissão'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AtribuirPermissao(),
-                  ),
-                );
+            FutureBuilder<String?>(
+              future: _storageService.getUserRole(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Indicador de carregamento
+                } else if (snapshot.hasError) {
+                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                } else {
+                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  return _userRole != 'PlatformAdministrator'
+                      ? ListTile(
+                    title: Text('Atribuir Permissão'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => AtribuirPermissao()),
+                      );
+                    },
+                  )
+                      : Container();
+                }
               },
-            ),
+            ),//Atribuir Permissao
             ListTile(
               title: const Text('Sair'),
               onTap: () async {
@@ -260,13 +273,13 @@ class _AtualizarDadosState extends State<AtualizarDados> {
                     ),
                   ),
                   style: ButtonStyle(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(
                         color: Color(0xFF8DCBC8),
                         width: 2.0,
                       ),
                     ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),

@@ -207,14 +207,29 @@ class _HomeGerenciamentoDePremiosState
                 }
               },
             ),//Insert Funcionario
-            ListTile(
-              title: Text('Atribuir Permissão'),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AtribuirPermissao()),
-                );
+            FutureBuilder<String?>(
+              future: _storageService.getUserRole(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Indicador de carregamento
+                } else if (snapshot.hasError) {
+                  return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                } else {
+                  _userRole = snapshot.data; // Atribui o papel do usuário
+                  return _userRole != 'PlatformAdministrator'
+                      ? ListTile(
+                    title: Text('Atribuir Permissão'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => AtribuirPermissao()),
+                      );
+                    },
+                  )
+                      : Container();
+                }
               },
-            ),
+            ),//Atribuir Permissao
             ListTile(
               title: Text('Atualizar Dados'),
               onTap: () {

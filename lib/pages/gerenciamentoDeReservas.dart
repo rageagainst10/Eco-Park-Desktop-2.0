@@ -195,7 +195,22 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
               }
             },
           ), //Insert Employee
-          _buildDrawerItem(context, 'Atribuir Permissão', AtribuirPermissao()),
+          FutureBuilder<String?>(
+            future: _storageService.getUserRole(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator(); // Indicador de carregamento
+              } else if (snapshot.hasError) {
+                return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+              } else {
+                _userRole = snapshot.data; // Atribui o papel do usuário
+                return _userRole != 'PlatformAdministrator'
+                    ? _buildDrawerItem(
+                    context, 'Atribuir Permissão', AtribuirPermissao())
+                    : Container();
+              }
+            },
+          ), //Atribuir Permissão
           _buildDrawerItem(context, 'Atualizar Dados', AtualizarDados()),
           _buildDrawerItemLogout(context, 'Sair', Login()),
         ],
@@ -329,10 +344,10 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
           style: TextStyle(color: Color(0xFF8DCBC8)),
         ),
         style: ButtonStyle(
-          side: MaterialStateProperty.all<BorderSide>(
+          side: WidgetStateProperty.all<BorderSide>(
             const BorderSide(color: Color(0xFF8DCBC8), width: 2.0),
           ),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),

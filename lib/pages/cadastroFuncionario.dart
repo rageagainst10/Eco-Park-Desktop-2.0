@@ -208,15 +208,29 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                     }
                   },
                 ),//Insert Location
-                ListTile(
-                  title: Text('Atribuir Permissão'),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => AtribuirPermissao()),
-                    );
+                FutureBuilder<String?>(
+                  future: _storageService.getUserRole(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // Indicador de carregamento
+                    } else if (snapshot.hasError) {
+                      return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                    } else {
+                      _userRole = snapshot.data; // Atribui o papel do usuário
+                      return _userRole != 'PlatformAdministrator'
+                          ? ListTile(
+                        title: Text('Atribuir Permissão'),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => AtribuirPermissao()),
+                          );
+                        },
+                      )
+                          : Container();
+                    }
                   },
-                ),
+                ),//Atribuir Permissao
                 ListTile(
                   title: Text('Atualizar Dados'),
                   onTap: () {
@@ -410,14 +424,14 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                         ),
                       ),
                       style: ButtonStyle(
-                        side: MaterialStateProperty.all<BorderSide>(
+                        side: WidgetStateProperty.all<BorderSide>(
                           const BorderSide(
                             color: Color(0xFF8DCBC8),
                             width: 2.0,
                           ),
                         ),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -443,14 +457,14 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                             }
                           : null, // Corrigido o chamado do método
                       style: ButtonStyle(
-                        side: MaterialStateProperty.all<BorderSide>(
+                        side: WidgetStateProperty.all<BorderSide>(
                           const BorderSide(
                             color: Color(0xFF8DCBC8),
                             width: 2.0,
                           ),
                         ),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
