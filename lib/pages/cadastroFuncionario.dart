@@ -502,9 +502,3 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     );
   }
 }
-
-void main() {
-  runApp(const MaterialApp(
-    home: CadastroDeFuncionario(),
-  ));
-}
