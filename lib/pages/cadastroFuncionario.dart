@@ -304,7 +304,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                   CaixaDeTextoCadastro(
                     texto: 'Senha',
                     controller: _senhaController,
-                    onChanged: (_) => _definesenhaErroMessage(),
+                    onChanged: (_) => _definesenhaErrorMessage(),
                   ),
                   if (_senhaErrorMessage !=
                       null) // Exibe mensagem de erro se as senhas não coincidirem
@@ -487,7 +487,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     return isSenhaCorreta;
   }
 
-  void _definesenhaErroMessage() {
+  void _definesenhaErrorMessage() {
     setState(() {
       _senhaErrorMessage = _validadePassword()
           ? null
