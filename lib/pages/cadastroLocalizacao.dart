@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../models/LocationCadastroModel.dart';
+import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 
 // Classe modelo para representar os dados do formulário
@@ -29,6 +30,10 @@ class _CadastroDeLocalizacaoState extends State<CadastroDeLocalizacao> {
   }
 
   final StorageService _storageService = getIt<StorageService>();
+  final AuthService _authService =
+  getIt<AuthService>(); // Obter instância do AuthService
+
+
   final TextEditingController _tempoLRController = TextEditingController();
   final TextEditingController _taxaReservaController = TextEditingController();
   final TextEditingController _nomeLocalizacaoController =
@@ -146,7 +151,8 @@ class _CadastroDeLocalizacaoState extends State<CadastroDeLocalizacao> {
             ),
             ListTile(
               title: Text('Sair'),
-              onTap: () {
+              onTap: () async {
+                await _authService.logout();
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => Login()),
                 );

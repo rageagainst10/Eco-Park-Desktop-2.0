@@ -5,6 +5,7 @@ class FormularioData {
   final String idGestor;
   final String email;
   final String senha;
+  final String userType;
 
   FormularioData({
     required this.nome,
@@ -12,5 +13,6 @@ class FormularioData {
     required this.idGestor,
     required this.email,
     required this.senha,
+    required this.userType,
   });
 }

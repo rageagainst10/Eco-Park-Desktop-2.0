@@ -58,7 +58,9 @@ class FuncionarioRepository {
       String password,
       Uint8List? imageData,
       String? mimeType,
-      String? imageName) async {
+      String? imageName,
+      String userType
+      ) async {
     final token = await _storageService.getToken();
 
     if (token == null) {
@@ -75,7 +77,7 @@ class FuncionarioRepository {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-      'userType': 'Employee', // Ou outro tipo de usuário
+      'userType': userType,
     });
 
     var request = http.MultipartRequest('POST', url);

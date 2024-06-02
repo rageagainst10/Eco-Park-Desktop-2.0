@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:ecoparkdesktop/pages/AtribuirPermissao.dart';
 import 'package:ecoparkdesktop/pages/atualizarDados.dart';
 import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
@@ -22,7 +21,7 @@ import 'package:mime/mime.dart';
 import '../services/auth_service.dart';
 
 class CadastroDeFuncionario extends StatefulWidget {
-  const CadastroDeFuncionario({Key? key}) : super(key: key);
+  const CadastroDeFuncionario({super.key});
 
   @override
   State<CadastroDeFuncionario> createState() => _CadastroDeFuncionarioState();
@@ -38,8 +37,10 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
       TextEditingController();
 
   final StorageService _storageService = GetIt.I<StorageService>();
-  final AuthService _authService = getIt<AuthService>(); // Obter instância do AuthService
+  final AuthService _authService =
+      getIt<AuthService>(); // Obter instância do AuthService
 
+  String? _cargoSelecionado;
   Uint8List? _imageData;
   String? _mimeType;
   String? _imageName;
@@ -63,7 +64,6 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
   }
 
   void _cadastrarFuncionario() async {
-
     if (_senhaController.text != _confirmarSenhaController.text) {
       setState(() {
         _confirmarSenhaErrorMessage = 'As senhas não coincidem.';
@@ -71,19 +71,23 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
       return; // Não realiza o cadastro
     } else {
       setState(() {
-        _confirmarSenhaErrorMessage = null; // Limpa a mensagem de erro se as senhas forem iguais
+        _confirmarSenhaErrorMessage =
+            null; // Limpa a mensagem de erro se as senhas forem iguais
       });
+    }
+    _definesenhaErroMessage();
+    if (_senhaErrorMessage != null) {
+      return;
     }
 
     // Criar uma instância do modelo de dados com os valores dos campos de texto
     FormularioData data = FormularioData(
-      nome: _nomeController.text,
-      sobrenome: _sobrenomeController.text,
-      idGestor: _idGestorController.text,
-      email: _emailController.text,
-      senha: _senhaController.text,
-    );
-
+        nome: _nomeController.text,
+        sobrenome: _sobrenomeController.text,
+        idGestor: _idGestorController.text,
+        email: _emailController.text,
+        senha: _senhaController.text,
+        userType: _cargoSelecionado.toString());
 
     try {
       final token =
@@ -102,6 +106,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
         _imageData,
         _mimeType,
         _imageName,
+        data.userType,
       );
     } catch (e) {
       // Tratar erro
@@ -110,10 +115,35 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     print('Enviando dados para a API: $data');
   }
 
+  String? _userRole;
+  bool _isLoadingRole = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserRole(); // Carrega o papel do usuário ao iniciar a tela
+  }
+  Future<void> _getUserRole() async {
+    try {
+      final userRole = await _storageService.getUserRole();
+      setState(() {
+        _userRole = userRole;
+        _isLoadingRole = false;
+      });
+    } catch (e) {
+      // Tratar erro ao obter o papel do usuário
+      setState(() {
+        _isLoadingRole = false;
+      });
+      print('Erro ao obter papel do usuário: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async{
+        onWillPop: () async {
           if (_senhaController.text != _confirmarSenhaController.text) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('As senhas não coincidem.')),
@@ -122,10 +152,10 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
           }
           return true; // Permite o retorno
         },
-        child:  Scaffold(
+        child: Scaffold(
           appBar: AppBarPersonalizado(
             text:
-            'Cadastro de Funcionários', // Passando o texto desejado para o AppBarPersonalizado
+                'Cadastro de Funcionários', // Passando o texto desejado para o AppBarPersonalizado
           ),
           drawer: Drawer(
             child: ListView(
@@ -174,7 +204,8 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                   title: Text('Atribuir Permissão'),
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AtribuirPermissao()),
+                      MaterialPageRoute(
+                          builder: (context) => AtribuirPermissao()),
                     );
                   },
                 ),
@@ -201,7 +232,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
           body: Center(
             child: Container(
               width: 350,
-              height: 500,
+              height: 654,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: const Color(0xFF8DCBC8),
@@ -279,13 +310,23 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                     controller: _senhaController,
                     onChanged: (_) => _definesenhaErroMessage(),
                   ),
+                  if (_senhaErrorMessage !=
+                      null) // Exibe mensagem de erro se as senhas não coincidirem
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        _senhaErrorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ),
                   const SizedBox(height: 15),
                   CaixaDeTextoCadastro(
                     texto: 'Confirmar Senha',
                     controller: _confirmarSenhaController,
                     onChanged: (_) => _validateConfirmedPassword(),
                   ),
-                  if (_confirmarSenhaErrorMessage != null) // Exibe mensagem de erro se as senhas não coincidirem
+                  if (_confirmarSenhaErrorMessage !=
+                      null) // Exibe mensagem de erro se as senhas não coincidirem
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
@@ -293,6 +334,61 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                         style: const TextStyle(color: Colors.red, fontSize: 12),
                       ),
                     ),
+                  const SizedBox(height: 15),
+                  FutureBuilder<String?>(
+                    future: _storageService.getUserRole(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // Indicador de carregamento
+                      } else if (snapshot.hasError) {
+                        return Text('Erro ao carregar o papel do usuário: ${snapshot.error}'); // Mensagem de erro
+                      } else {
+                        _userRole = snapshot.data; // Atribui o papel do usuário
+                        return _userRole == 'PlatformAdministrator'
+                            ? DropdownButtonFormField<String>(
+                          hint: Text('Selecione o cargo do funcionário'),
+                          value: _cargoSelecionado,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _cargoSelecionado = newValue;
+                            });
+                          },
+                          items: [
+                            _buildDropdownMenuItem('Administrador de Plataforma',
+                                'PlataformAdministrator'),
+                            _buildDropdownMenuItem('Administrador', 'Administrator'),
+                            _buildDropdownMenuItem('Funcionário', 'Employee'),
+                          ].toList(),
+                        )
+                            :  _userRole == 'Administrator'
+                            ? DropdownButtonFormField<String>(
+                          hint: Text('Selecione o cargo do funcionário'),
+                          value: _cargoSelecionado,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _cargoSelecionado = newValue;
+                            });
+                          },
+                          items: [
+                            _buildDropdownMenuItem('Administrador', 'Administrator'),
+                            _buildDropdownMenuItem('Funcionário', 'Employee'),
+                          ].toList(),
+                        )
+                            : DropdownButtonFormField<String>(
+                          hint: Text('Selecione o cargo do funcionário'),
+                          value: _cargoSelecionado,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _cargoSelecionado = newValue;
+                            });
+                          },
+                          items: [
+                            _buildDropdownMenuItem('Funcionário', 'Employee'),
+                          ].toList(),
+                        );
+                      }
+                    },
+                  ),
                   const SizedBox(height: 15),
                   Container(
                     height: 40,
@@ -312,7 +408,8 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                             width: 2.0,
                           ),
                         ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -325,14 +422,18 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                     height: 40,
                     width: 315,
                     child: TextButton(
-                      onPressed: _senhaController.text == _confirmarSenhaController.text
+                      onPressed: (_senhaController.text ==
+                                  _confirmarSenhaController.text) &&
+                              _validadePassword()
                           ? () {
-                        _cadastrarFuncionario();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => CadastroDeLocalizacao()),
-                        );
-                      } : null, // Corrigido o chamado do método
+                              _cadastrarFuncionario();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CadastroDeLocalizacao()),
+                              );
+                            }
+                          : null, // Corrigido o chamado do método
                       style: ButtonStyle(
                         side: MaterialStateProperty.all<BorderSide>(
                           const BorderSide(
@@ -340,7 +441,8 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                             width: 2.0,
                           ),
                         ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -356,37 +458,57 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                   ),
                   _imagem != null // Exibe a imagem se ela foi selecionada
                       ? Image.memory(
-                    _imageData!,
-                    width: 100, // Ajuste a largura conforme necessário
-                    height: 100, // Ajuste a altura conforme necessário
-                  )
+                          _imageData!,
+                          width: 100, // Ajuste a largura conforme necessário
+                          height: 100, // Ajuste a altura conforme necessário
+                        )
                       : const SizedBox
-                      .shrink(), // Não exibe nada se não houver imagem
+                          .shrink(), // Não exibe nada se não houver imagem
                 ],
               ),
             ),
           ),
         ));
   }
+
   void _validateConfirmedPassword() {
     setState(() {
-      _confirmarSenhaErrorMessage = _senhaController.text == _confirmarSenhaController.text ? null : 'As senhas não coincidem.';
+      _confirmarSenhaErrorMessage =
+          _senhaController.text == _confirmarSenhaController.text
+              ? null
+              : 'As senhas não coincidem.';
     });
   }
 
-  bool _validadePassword(){
+  bool _validadePassword() {
     bool temMaiuscula = _senhaController.text.contains(RegExp(r'[A-Z]'));
     bool temMinuscula = _senhaController.text.contains(RegExp(r'[a-z]'));
     bool temNumero = _senhaController.text.contains(RegExp(r'[0-9]'));
     bool temTamanhoCorreto = _senhaController.text.length >= 7;
-    bool isSenhaCorreta = temMaiuscula && temMinuscula && temNumero && temTamanhoCorreto;
+    bool isSenhaCorreta =
+        temMaiuscula && temMinuscula && temNumero && temTamanhoCorreto;
 
     return isSenhaCorreta;
   }
 
   void _definesenhaErroMessage() {
     setState(() {
-      _senhaErrorMessage = _validadePassword() ? null : 'A senha deve conter um caracter maiúsculo, um minúsculo e no mínimo 7 caracteres.';
+      _senhaErrorMessage = _validadePassword()
+          ? null
+          : 'A senha deve conter um caracter maiúsculo, um minúsculo e no mínimo 7 caracteres.';
     });
   }
+
+  DropdownMenuItem<String> _buildDropdownMenuItem(String label, String value) {
+    return DropdownMenuItem<String>(
+      value: value, // Valor em inglês
+      child: Text(label), // Texto em português
+    );
+  }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    home: CadastroDeFuncionario(),
+  ));
 }

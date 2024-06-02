@@ -5,6 +5,11 @@ import 'package:ecoparkdesktop/pages/gerenciamentoDeReservas.dart';
 import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
+import 'package:get_it/get_it.dart';
+
+import '../main.dart';
+import '../services/auth_service.dart';
+import '../services/storage_service.dart';
 
 class AtribuirPermissao extends StatefulWidget {
   const AtribuirPermissao({Key? key}) : super(key: key);
@@ -14,6 +19,10 @@ class AtribuirPermissao extends StatefulWidget {
 }
 
 class _AtribuirPermissaoState extends State<AtribuirPermissao> {
+  final StorageService _storageService = GetIt.I<StorageService>();
+  final AuthService _authService =
+  getIt<AuthService>(); // Obter instância do AuthService
+
   // Lista de itens para o dropdown
   final List<String> _items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   // Valor selecionado
@@ -94,7 +103,8 @@ class _AtribuirPermissaoState extends State<AtribuirPermissao> {
             ),
             ListTile(
               title: const Text('Sair'),
-              onTap: () {
+              onTap: () async {
+                await _authService.logout();
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const Login(),

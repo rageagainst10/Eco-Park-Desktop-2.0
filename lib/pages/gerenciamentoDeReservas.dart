@@ -8,6 +8,7 @@ import '../main.dart';
 import '../models/LocationModel.dart';
 import '../models/ParkingSpaceModel.dart';
 import '../repositories/gerenciamentoDeReservasRepository.dart';
+import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/AppBarPersonalizado.dart';
 import '../widgets/ListaDeVagas.dart';
@@ -22,6 +23,9 @@ class GerenciamentoDeReserva extends StatefulWidget {
 
 class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   final StorageService _storageService = getIt<StorageService>();
+  final AuthService _authService =
+  getIt<AuthService>(); // Obter instância do AuthService
+
   final TextEditingController _textController = TextEditingController();
 
   List<LocationModel> _estabelecimentos = [];
@@ -158,7 +162,8 @@ class _GerenciamentoDeReservaState extends State<GerenciamentoDeReserva> {
   Widget _buildDrawerItem(BuildContext context, String title, Widget page) {
     return ListTile(
       title: Text(title),
-      onTap: () {
+      onTap: () async {
+        await _authService.logout();
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => page));
       },

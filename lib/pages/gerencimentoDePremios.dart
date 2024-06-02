@@ -7,6 +7,10 @@ import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+import '../services/auth_service.dart';
+import '../services/storage_service.dart';
+
 class GerenciamentoDePremios extends StatelessWidget {
   const GerenciamentoDePremios({Key? key}) : super(key: key);
 
@@ -33,6 +37,10 @@ class _HomeGerenciamentoDePremiosState
   final TextEditingController valorController = TextEditingController();
   final TextEditingController validadeController = TextEditingController();
   final TextEditingController imagemController = TextEditingController();
+
+  final StorageService _storageService = getIt<StorageService>();
+  final AuthService _authService =
+  getIt<AuthService>(); // Obter instância do AuthService
 
   List<Map<String, String>> premios = [];
 
@@ -168,7 +176,8 @@ class _HomeGerenciamentoDePremiosState
             ),
             ListTile(
               title: Text('Sair'),
-              onTap: () {
+              onTap: () async {
+                await _authService.logout();
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => Login()),
                 );

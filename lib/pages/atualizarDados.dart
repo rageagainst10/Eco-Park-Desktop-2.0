@@ -6,6 +6,11 @@ import 'package:ecoparkdesktop/pages/gerencimentoDePremios.dart';
 import 'package:ecoparkdesktop/pages/login.dart';
 import 'package:ecoparkdesktop/widgets/AppBarPersonalizado.dart';
 import 'package:ecoparkdesktop/widgets/CaixaDeTextoCadastro.dart';
+import 'package:get_it/get_it.dart';
+
+import '../main.dart';
+import '../services/auth_service.dart';
+import '../services/storage_service.dart';
 
 class AtualizarDados extends StatefulWidget {
   const AtualizarDados({Key? key}) : super(key: key);
@@ -19,6 +24,11 @@ class _AtualizarDadosState extends State<AtualizarDados> {
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _confirmarSenhaController =
       TextEditingController();
+
+  final StorageService _storageService = GetIt.I<StorageService>();
+  final AuthService _authService =
+  getIt<AuthService>(); // Obter instância do AuthService
+
 
   void _atualizarDados() {
     // Lógica para atualizar os dados aqui
@@ -100,7 +110,8 @@ class _AtualizarDadosState extends State<AtualizarDados> {
             ),
             ListTile(
               title: const Text('Sair'),
-              onTap: () {
+              onTap: () async {
+                await _authService.logout();
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const Login(),
