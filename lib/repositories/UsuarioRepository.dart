@@ -10,6 +10,7 @@ class UsuarioRepository {
 
   UsuarioRepository(this._storageService);
 
+
   Future<void> atualizarDadosUsuario(UserModel usuario) async {
     final url = Uri.parse(_baseUrl);
     final token = await _storageService.getToken();

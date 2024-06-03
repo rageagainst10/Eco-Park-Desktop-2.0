@@ -57,22 +57,15 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     _imageData = await pickedFile.readAsBytes(); // Lê os bytes da imagem
     setState(() {
       _imagem = File(pickedFile.path);
-    }); // Atualiza o estado para exibir a imagem selecionada (opcional)
+    }); // Atualiza o estado para exibir a imagem selecionada
   }
 
   void _cadastrarFuncionario() async {
-    if (_senhaController.text != _confirmarSenhaController.text) {
-      setState(() {
-        _confirmarSenhaErrorMessage = 'As senhas não coincidem.';
-      });
-      return; // Não realiza o cadastro
-    } else {
-      setState(() {
-        _confirmarSenhaErrorMessage =
-            null; // Limpa a mensagem de erro se as senhas forem iguais
-      });
+    _defineConfirmedPasswordErrorMessage();
+    if(_confirmarSenhaErrorMessage != null){
+      return;
     }
-    _definesenhaErrorMessage();
+    _definePasswordErrorMessage();
     if (_senhaErrorMessage != null) {
       return;
     }
@@ -332,12 +325,18 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                   ),
                   const SizedBox(height: 15),
                   CaixaDeTextoCadastro(
-                    texto: 'Senha',
-                    controller: _senhaController,
-                    onChanged: (_) => _definesenhaErrorMessage(),
+                      texto: 'Senha',
+                      controller: _senhaController,
+                      onChanged: (_) {
+                        _definePasswordErrorMessage();
+                        if(_confirmarSenhaController.text.isNotEmpty)
+                        {
+                          _defineConfirmedPasswordErrorMessage();
+                        }
+                      }
                   ),
                   if (_senhaErrorMessage !=
-                      null) // Exibe mensagem de erro se as senhas não coincidirem
+                      null) // Exibe mensagem de erro se a senha for invalida
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
@@ -349,10 +348,10 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                   CaixaDeTextoCadastro(
                     texto: 'Confirmar Senha',
                     controller: _confirmarSenhaController,
-                    onChanged: (_) => _validateConfirmedPassword(),
+                    onChanged: (_) => _defineConfirmedPasswordErrorMessage(),
                   ),
                   if (_confirmarSenhaErrorMessage !=
-                      null) // Exibe mensagem de erro se as senhas não coincidirem
+                      null && _senhaController.text.isNotEmpty) // Exibe mensagem de erro se as senhas não coincidirem
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
@@ -504,13 +503,16 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
         ));
   }
 
-  void _validateConfirmedPassword() {
+  void _defineConfirmedPasswordErrorMessage() {
     setState(() {
-      _confirmarSenhaErrorMessage =
-          _senhaController.text == _confirmarSenhaController.text
-              ? null
-              : 'As senhas não coincidem.';
+      _confirmarSenhaErrorMessage = _validateConfirmedPassword()
+          ? null
+          : 'As senhas não coincidem.';
     });
+  }
+
+  bool _validateConfirmedPassword(){
+    return ((_senhaController.text == _confirmarSenhaController.text)  || _senhaController.text.isEmpty && _confirmarSenhaController.text.isEmpty);
   }
 
   bool _validadePassword() {
@@ -518,17 +520,18 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     bool temMinuscula = _senhaController.text.contains(RegExp(r'[a-z]'));
     bool temNumero = _senhaController.text.contains(RegExp(r'[0-9]'));
     bool temTamanhoCorreto = _senhaController.text.length >= 7;
+    bool contemCaracterEspecial = _senhaController.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
     bool isSenhaCorreta =
-        temMaiuscula && temMinuscula && temNumero && temTamanhoCorreto;
+        (temMaiuscula && temMinuscula && temNumero && temTamanhoCorreto && contemCaracterEspecial) || _senhaController.text.isEmpty;
 
     return isSenhaCorreta;
   }
 
-  void _definesenhaErrorMessage() {
+  void _definePasswordErrorMessage() {
     setState(() {
       _senhaErrorMessage = _validadePassword()
           ? null
-          : 'A senha deve conter um caracter maiúsculo, um minúsculo e no mínimo 7 caracteres.';
+          : 'A senha deve conter um caracter maiúsculo, um minúsculo, um caracter especial e no mínimo 7 caracteres.';
     });
   }
 

@@ -31,8 +31,9 @@ class AuthRepository {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final String token = data['token'];
-
         await _storageService.saveToken(token);
+        final String userEmail = data['email'];
+        await _storageService.saveUserEmail(userEmail);
 
         final jwt = JWT.decode(token);//Decodifica o Token
         // Salvar o UserRole no StorageService
