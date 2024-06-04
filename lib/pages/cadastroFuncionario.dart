@@ -62,7 +62,7 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
 
   void _cadastrarFuncionario() async {
     _defineConfirmedPasswordErrorMessage();
-    if(_confirmarSenhaErrorMessage != null){
+    if (_confirmarSenhaErrorMessage != null) {
       return;
     }
     _definePasswordErrorMessage();
@@ -329,12 +329,10 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                       controller: _senhaController,
                       onChanged: (_) {
                         _definePasswordErrorMessage();
-                        if(_confirmarSenhaController.text.isNotEmpty)
-                        {
+                        if (_confirmarSenhaController.text.isNotEmpty) {
                           _defineConfirmedPasswordErrorMessage();
                         }
-                      }
-                  ),
+                      }),
                   if (_senhaErrorMessage !=
                       null) // Exibe mensagem de erro se a senha for invalida
                     Padding(
@@ -350,8 +348,9 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
                     controller: _confirmarSenhaController,
                     onChanged: (_) => _defineConfirmedPasswordErrorMessage(),
                   ),
-                  if (_confirmarSenhaErrorMessage !=
-                      null && _senhaController.text.isNotEmpty) // Exibe mensagem de erro se as senhas não coincidirem
+                  if (_confirmarSenhaErrorMessage != null &&
+                      _senhaController.text
+                          .isNotEmpty) // Exibe mensagem de erro se as senhas não coincidirem
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
@@ -505,14 +504,15 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
 
   void _defineConfirmedPasswordErrorMessage() {
     setState(() {
-      _confirmarSenhaErrorMessage = _validateConfirmedPassword()
-          ? null
-          : 'As senhas não coincidem.';
+      _confirmarSenhaErrorMessage =
+          _validateConfirmedPassword() ? null : 'As senhas não coincidem.';
     });
   }
 
-  bool _validateConfirmedPassword(){
-    return ((_senhaController.text == _confirmarSenhaController.text)  || _senhaController.text.isEmpty && _confirmarSenhaController.text.isEmpty);
+  bool _validateConfirmedPassword() {
+    return ((_senhaController.text == _confirmarSenhaController.text) ||
+        _senhaController.text.isEmpty &&
+            _confirmarSenhaController.text.isEmpty);
   }
 
   bool _validadePassword() {
@@ -520,9 +520,14 @@ class _CadastroDeFuncionarioState extends State<CadastroDeFuncionario> {
     bool temMinuscula = _senhaController.text.contains(RegExp(r'[a-z]'));
     bool temNumero = _senhaController.text.contains(RegExp(r'[0-9]'));
     bool temTamanhoCorreto = _senhaController.text.length >= 7;
-    bool contemCaracterEspecial = _senhaController.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-    bool isSenhaCorreta =
-        (temMaiuscula && temMinuscula && temNumero && temTamanhoCorreto && contemCaracterEspecial) || _senhaController.text.isEmpty;
+    bool contemCaracterEspecial =
+        _senhaController.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    bool isSenhaCorreta = (temMaiuscula &&
+            temMinuscula &&
+            temNumero &&
+            temTamanhoCorreto &&
+            contemCaracterEspecial) ||
+        _senhaController.text.isEmpty;
 
     return isSenhaCorreta;
   }
