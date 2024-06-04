@@ -292,229 +292,220 @@ class _HomeGerenciamentoDePremiosState
         ),
       ),
       body:
-      Center(
-        child: Container(
-          width: 350+515,
-          height: 600,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: const Color(0xFF8DCBC8),
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: ListView(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
             children: [
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Column(
-                children: [
-                  DropdownButton<LocationModel>(
-                    hint: const Text('Selecionar Localização'),
-                    value: _selectedLocation,
-                    items: _localizacoes.map((location) {
-                      return DropdownMenuItem<LocationModel>(
-                        value: location,
-                        child: Text(location.name),
-                      );
-                    }).toList(),
-                    onChanged: (LocationModel? newValue) {
-                      setState(() {
-                        _selectedLocation = newValue;
-                        if (newValue != null) {
-                          _loadPremios(newValue.id);
-                        }
-                      });
-                    },
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true, // Permite que o ListView tenha altura limitada
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _premios.length,
-                    itemBuilder: (context, index) {
-                      final premio = _premios[index];
-                      return ListTile(
-                        title: Text(premio.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Quantidade: ${premio.quantity}'),
-                            Text('Custo em Pontos: ${premio.pointCost}'),
-                            Text('Descrição: ${premio.description}'),
-                            if (premio.url != null) Text('URL: ${premio.url}'),
-                            if (premio.imageUrl != null)
-                              Text('URL da Imagem: ${premio.imageUrl}'),
-                            if (premio.expirationDate != null)
-                              Text(
-                                  'Data de Expiração: ${premio.expirationDate}'),
-                            // ... outros campos que você queira exibir
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
+              DropdownButton<LocationModel>(
+                hint: const Text('Selecionar Localização'),
+                value: _selectedLocation,
+                items: _localizacoes.map((location) {
+                  return DropdownMenuItem<LocationModel>(
+                    value: location,
+                    child: Text(location.name),
+                  );
+                }).toList(),
+                onChanged: (LocationModel? newValue) {
+                  setState(() {
+                    _selectedLocation = newValue;
+                    if (newValue != null) {
+                      _loadPremios(newValue.id);
+                    }
+                  });
+                },
               ),
-              const SizedBox(height: 16),
-              SingleChildScrollView(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color(0xFF8DCBC8),
-                      width: 1.0,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextField(
-                        controller: nomeController,
-                        decoration: InputDecoration(
-                          labelText: "Nome do prêmio",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF8DCBC8)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Row(
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _premios.length,
+                  itemBuilder: (context, index) {
+                    final premio = _premios[index];
+                    return ListTile(
+                      title: Text(premio.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: quantidadeController,
-                              decoration: InputDecoration(
-                                labelText: "Quantidade disponível",
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF8DCBC8)),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: TextField(
-                              controller: valorController,
-                              decoration: InputDecoration(
-                                labelText: "Valor do prêmio",
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF8DCBC8)),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: TextField(
-                              controller: validadeController,
-                              decoration: InputDecoration(
-                                labelText: "Validade do prêmio",
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF8DCBC8)),
-                                ),
-                              ),
-                            ),
-                          ),
+                          Text('Quantidade: ${premio.quantity}'),
+                          Text('Custo em Pontos: ${premio.pointCost}'),
+                          Text('Descrição: ${premio.description}'),
+                          if (premio.url != null) Text('URL: ${premio.url}'),
+                          if (premio.imageUrl != null)
+                            Text('URL da Imagem: ${premio.imageUrl}'),
+                          if (premio.expirationDate != null)
+                            Text(
+                                'Data de Expiração: ${premio.expirationDate}'),
+                          // ... outros campos que você queira exibir
                         ],
                       ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 40,
-                              child: TextButton(
-                                onPressed: () {}, //_getImage,
-                                style: TextButton.styleFrom(
-                                  side: BorderSide(color: Color(0xFF8DCBC8)),
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Color(0xFF8DCBC8),
-                                ),
-                                child: Text(
-                                  "Adicionar Imagem",
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 16), // Espaço entre os botões
-                          Expanded(
-                            child: Container(
-                              height: 40,
-                              child: TextButton(
-                                onPressed: adicionarProduto,
-                                style: TextButton.styleFrom(
-                                  side: BorderSide(color: Color(0xFF8DCBC8)),
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Color(0xFF8DCBC8),
-                                ),
-                                child: Text(
-                                  "Adicionar Produto",
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: premios.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            margin: EdgeInsets.symmetric(vertical: 4),
-                            child: ListTile(
-                              title: Text(premios[index]['nome']!),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Quantidade: ${premios[index]['quantidade']}"),
-                                  Text("Valor: ${premios[index]['valor']}"),
-                                  Text("Validade: ${premios[index]['validade']}"),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  excluirProduto(index);
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Você possui ${_premios.length} prêmio(s) adicionado(s) a essa localização"),
-                          Spacer(),
-                          ElevatedButton(
-                            onPressed: limparTudo,
-                            style: ElevatedButton.styleFrom(
-                              fixedSize: Size(200, 45),
-                              side: BorderSide(color: Color(0xFF8DCBC8)),
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                            ),
-                            child: Text(
-                              "Limpar tudo",
-                              style: TextStyle(
-                                color: Color(0xFF8DCBC8),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ],
           ),
-        ),
-      ),
+          SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color(0xFF8DCBC8),
+                  width: 1.0,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: nomeController,
+                    decoration: InputDecoration(
+                      labelText: "Nome do prêmio",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF8DCBC8)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: quantidadeController,
+                          decoration: InputDecoration(
+                            labelText: "Quantidade disponível",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF8DCBC8)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: valorController,
+                          decoration: InputDecoration(
+                            labelText: "Valor do prêmio",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF8DCBC8)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: validadeController,
+                          decoration: InputDecoration(
+                            labelText: "Validade do prêmio",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF8DCBC8)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 40,
+                          child: TextButton(
+                            onPressed: () {}, //_getImage,
+                            style: TextButton.styleFrom(
+                              side: BorderSide(color: Color(0xFF8DCBC8)),
+                              backgroundColor: Colors.white,
+                              foregroundColor: Color(0xFF8DCBC8),
+                            ),
+                            child: Text(
+                              "Adicionar Imagem",
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16), // Espaço entre os botões
+                      Expanded(
+                        child: Container(
+                          height: 40,
+                          child: TextButton(
+                            onPressed: adicionarProduto,
+                            style: TextButton.styleFrom(
+                              side: BorderSide(color: Color(0xFF8DCBC8)),
+                              backgroundColor: Colors.white,
+                              foregroundColor: Color(0xFF8DCBC8),
+                            ),
+                            child: Text(
+                              "Adicionar Produto",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: premios.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        margin: EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          title: Text(premios[index]['nome']!),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Quantidade: ${premios[index]['quantidade']}"),
+                              Text("Valor: ${premios[index]['valor']}"),
+                              Text("Validade: ${premios[index]['validade']}"),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              excluirProduto(index);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Você possui ${_premios.length} prêmios adicionados a essa localização"),
+                      Spacer(),
+                      ElevatedButton(
+                        onPressed: limparTudo,
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(200, 45),
+                          side: BorderSide(color: Color(0xFF8DCBC8)),
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                        ),
+                        child: Text(
+                          "Limpar tudo",
+                          style: TextStyle(
+                            color: Color(0xFF8DCBC8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],),
+
     );
   }
+}
+
+void main() {
+  runApp(const GerenciamentoDePremios());
 }
