@@ -1,16 +1,18 @@
 import 'package:ecoparkdesktop/main.dart';
+import 'package:ecoparkdesktop/services/base_auth_service.dart';
 
 import '../models/LoginModel.dart';
 import '../repositories/AuthRepository.dart';
 import '../services/storage_service.dart';
 
-class AuthService {
+class AuthService extends BaseAuthService{
   final AuthRepository _authRepository;
   final StorageService _storageService = getIt<StorageService>();
   LoginModel? _currentUser;
 
   AuthService(this._authRepository);
 
+  @override
   Future<void> login(String email, String senha) async {
     _currentUser = await _authRepository.login(email, senha);
   }
@@ -19,6 +21,7 @@ class AuthService {
 
   LoginModel? get currentUser => _currentUser;
 
+  @override
   Future<void> logout() async {
     await _storageService.deleteToken();
     await _storageService.deleteUserRole();
